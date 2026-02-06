@@ -1,5 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useEffect, useRef, type KeyboardEvent } from "react";
+import Markdown from "react-markdown";
 import {
   CHAT_PLACEHOLDER,
   CHAT_PROMPT,
@@ -90,15 +91,15 @@ export function ChatContent() {
                     message.role === "user" ? "text-right" : "text-left"
                   }
                 >
-                  <p
-                    className={`inline-block max-w-[85%] whitespace-pre-wrap text-sm ${
-                      message.role === "user"
-                        ? "text-neutral-900 dark:text-neutral-100"
-                        : "text-neutral-700 dark:text-neutral-300"
-                    }`}
-                  >
-                    {text}
-                  </p>
+                  {message.role === "user" ? (
+                    <p className="inline-block max-w-[85%] whitespace-pre-wrap text-sm text-neutral-900 dark:text-neutral-100">
+                      {text}
+                    </p>
+                  ) : (
+                    <div className="prose prose-sm prose-neutral dark:prose-invert max-w-[85%] prose-p:leading-relaxed prose-pre:bg-neutral-100 prose-pre:dark:bg-neutral-800">
+                      <Markdown>{text}</Markdown>
+                    </div>
+                  )}
                 </div>
               );
             })}
