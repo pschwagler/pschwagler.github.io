@@ -95,7 +95,9 @@ content/
 └── meta.md             # Tone, style, boundaries for AI responses
 ```
 
-**Pipeline**: `content/*.md` → chunk → embed via Google text-embedding-004 → Supabase pgvector. Rebuild on deploy or via script.
+**Pipeline**: `content/*.md` → chunk → embed via Google text-embedding-004 → Supabase pgvector. Rebuild via manual script (run before deploy when content changes).
+
+**Chunking**: ~500 tokens per chunk, 50-token overlap. Top-5 retrieval per query.
 
 ## AI Chat Architecture
 
@@ -111,7 +113,7 @@ User sends message
   → Stream response back to client
 ```
 
-**Provider strategy**: `@ai-sdk/google` with Gemini 2.5 Flash primary. Fall back to `@ai-sdk/anthropic` Claude on error/timeout. Google context caching on system prompt + RAG context to reduce per-request token cost.
+**Provider strategy**: `@ai-sdk/google` with Gemini 2.5 Flash primary. Fall back to `@ai-sdk/anthropic` Claude on error/timeout (10s timeout triggers fallback). Google context caching on system prompt + RAG context to reduce per-request token cost. Fallback is transparent to user — no "switching providers" message.
 
 **Auth**: Anonymous visitors only. No sign-in.
 
@@ -124,12 +126,25 @@ User sends message
 | 3     | Sliding window rate limit | ~50 messages/hour per session+IP (valid Turnstile token required).              |
 | 4     | API spend caps            | Hard limits on Google AI + Anthropic dashboards.                                |
 
+**Rate limit storage**: Supabase table (simple, already in stack).
+
+**Session tracking**: Cookie-based session ID (set on first visit) + IP.
+
 ## Design
 
 Minimal/clean. White space, typography-focused. References: linear.app, rauno.me. Neutral color palette.
 
+- **Font**: Geist Sans (primary), system stack fallback
+- **Colors**: Tailwind neutral scale (`neutral-50` through `neutral-950`). Light: white bg, neutral-900 text. Dark: neutral-950 bg, neutral-50 text. Chat panel: subtle offset bg (neutral-50 light / neutral-900 dark).
 - **Dark mode**: Toggle in nav. System preference (`prefers-color-scheme`) as default.
 - **Animations**: Subtle fade-in on page load. Smooth scroll. Chat panel slide transition. No section reveals, no parallax.
+- **Experience timeline**: Simple list with dates and role progression (not a visual timeline with dots/lines)
+- **Skills pills**: Grouped by category (languages, frameworks, tools, platforms). Same neutral style, no color coding.
+- **App cards**: Icon/emoji + title + short description. Expandable to show tech stack + link to live app.
+- **Error states**: Generic "Something went wrong — try again" if both AI providers fail. No technical details exposed.
+- **Empty chat state**: Suggested question chips + brief welcome line ("Ask me anything about Patrick's work")
+- **Conversation cap**: No hard cap. Natural conversation length.
+- **Mobile chat history**: Bottom sheet preserves prior messages from same session.
 
 ## Analytics
 
@@ -139,9 +154,10 @@ Vercel Analytics (built-in, privacy-friendly).
 
 ### Phase 1: Foundation
 
+- [ ] Tear down multi-route scaffold (remove `/experience`, `/projects`, `/chat` routes + nav bar)
 - [ ] Adaptive split layout shell (single route)
 - [ ] Chat panel component (collapsible, slide transition, responsive)
-- [ ] Portfolio sections: Intro (with GitHub/LinkedIn), Apps, Experience, Skills
+- [ ] Portfolio sections: Intro (with GitHub/LinkedIn), Apps, Experience, Skills (placeholder content)
 - [ ] Mobile bottom sheet for chat
 - [ ] Dark mode toggle + system preference detection
 - [ ] Supabase client (SSR with `@supabase/ssr`)
@@ -178,4 +194,18 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] SEO: meta tags, Open Graph, structured data
 - [ ] Performance: Lighthouse audit, image optimization
 - [ ] Accessibility: keyboard nav, screen reader, contrast (both themes)
+- [ ] Favicon + OG image
 - [ ] Production deploy + custom domain
+
+## Profile
+
+- **GitHub**: github.com/pschwagler
+- **LinkedIn**: linkedin.com/in/pschwagler
+- **Page title**: "Patrick Schwagler" with rotating subtitle cycling through: Forward Deployed Engineer, Software Engineer, Engineering Manager, AI Engineer
+- **Tagline**: "Builder. Engineer. Leader."
+
+## Open Questions
+
+- **Custom domain**: TBD before Phase 4
+- **Beach League + GiftWell live URLs**: Needed for Phase 2 app cards
+- **Suggested question chips**: Current examples ("What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League") — finalize during Phase 2
