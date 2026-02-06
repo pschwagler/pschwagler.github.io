@@ -118,49 +118,56 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Chat panel */}
-      {chatOpen ? (
-        <aside className="hidden w-[380px] shrink-0 border-l border-neutral-100 bg-neutral-50 md:block">
-          <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-3">
-              <span className="text-sm font-medium text-neutral-500">Chat</span>
-              <button
-                onClick={() => setChatOpen(false)}
-                className="text-neutral-400 hover:text-neutral-600"
-                aria-label="Close chat"
-              >
-                <XIcon />
-              </button>
-            </div>
-            <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-              <p className="text-sm text-neutral-500">
-                Ask me anything about Patrick&apos;s work
-              </p>
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {[
-                  "What did Patrick build at C3?",
-                  "What's his tech stack?",
-                  "Tell me about Beach League",
-                ].map((q) => (
-                  <button
-                    key={q}
-                    className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="border-t border-neutral-100 p-4">
-              <textarea
-                placeholder="Ask a question..."
-                rows={1}
-                className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300"
-              />
+      {/* Chat panel — always rendered on desktop for smooth slide transition */}
+      <aside
+        className={`hidden shrink-0 bg-neutral-50 transition-all duration-300 ease-in-out md:block ${
+          chatOpen
+            ? "w-[380px] border-l border-neutral-100"
+            : "w-0 overflow-hidden"
+        }`}
+      >
+        <div className="flex h-full w-[380px] flex-col">
+          <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-3">
+            <span className="text-sm font-medium text-neutral-500">Chat</span>
+            <button
+              onClick={() => setChatOpen(false)}
+              className="text-neutral-400 hover:text-neutral-600"
+              aria-label="Close chat"
+            >
+              <XIcon />
+            </button>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+            <p className="text-sm text-neutral-500">
+              Ask me anything about Patrick&apos;s work
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {[
+                "What did Patrick build at C3?",
+                "What's his tech stack?",
+                "Tell me about Beach League",
+              ].map((q) => (
+                <button
+                  key={q}
+                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300"
+                >
+                  {q}
+                </button>
+              ))}
             </div>
           </div>
-        </aside>
-      ) : (
+          <div className="border-t border-neutral-100 p-4">
+            <textarea
+              placeholder="Ask a question..."
+              rows={1}
+              className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300"
+            />
+          </div>
+        </div>
+      </aside>
+
+      {/* Desktop reopen chat button */}
+      {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
           className="fixed bottom-6 right-6 hidden rounded-full bg-neutral-900 p-3 text-white shadow-lg hover:bg-neutral-800 md:block"
