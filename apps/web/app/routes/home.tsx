@@ -19,6 +19,7 @@ function getServerSnapshot() {
 
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const dark = useSyncExternalStore(
     subscribeToTheme,
     getThemeSnapshot,
@@ -219,12 +220,82 @@ export default function Home() {
       )}
 
       {/* Mobile FAB */}
-      <button
-        className="fixed bottom-6 right-6 rounded-full bg-neutral-900 p-3 text-white shadow-lg hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 md:hidden"
-        aria-label="Open chat"
+      {!mobileSheetOpen && (
+        <button
+          onClick={() => setMobileSheetOpen(true)}
+          className="fixed bottom-6 right-6 rounded-full bg-neutral-900 p-3 text-white shadow-lg hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 md:hidden"
+          aria-label="Open chat"
+        >
+          <ChatIcon />
+        </button>
+      )}
+
+      {/* Mobile bottom sheet */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden ${
+          mobileSheetOpen ? "pointer-events-auto" : "pointer-events-none"
+        }`}
       >
-        <ChatIcon />
-      </button>
+        {/* Backdrop */}
+        <div
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+            mobileSheetOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() => setMobileSheetOpen(false)}
+        />
+        {/* Sheet */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 flex max-h-[85vh] flex-col rounded-t-2xl bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-neutral-900 ${
+            mobileSheetOpen ? "translate-y-0" : "translate-y-full"
+          }`}
+        >
+          {/* Drag handle */}
+          <div className="flex justify-center pt-3 pb-1">
+            <div className="h-1 w-8 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+          </div>
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-2 dark:border-neutral-800">
+            <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+              Chat
+            </span>
+            <button
+              onClick={() => setMobileSheetOpen(false)}
+              className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+              aria-label="Close chat"
+            >
+              <XIcon />
+            </button>
+          </div>
+          {/* Content */}
+          <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 text-center">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              Ask me anything about Patrick&apos;s work
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {[
+                "What did Patrick build at C3?",
+                "What's his tech stack?",
+                "Tell me about Beach League",
+              ].map((q) => (
+                <button
+                  key={q}
+                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Input */}
+          <div className="border-t border-neutral-100 p-4 dark:border-neutral-800">
+            <textarea
+              placeholder="Ask a question..."
+              rows={1}
+              className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus:border-neutral-600"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
