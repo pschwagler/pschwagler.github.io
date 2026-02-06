@@ -1,6 +1,6 @@
 # REPO
 
-fYou're in the repo at the workspace root. To confirm repo identity, run: `gh repo view --json nameWithOwner -q .nameWithOwner` or `git rev-parse --show-toplevel`.
+You're in the repo at the workspace root. To confirm repo identity, run: `gh repo view --json nameWithOwner -q .nameWithOwner` or `git rev-parse --show-toplevel`.
 
 https://github.com/pschwagler/pschwagler.github.io
 

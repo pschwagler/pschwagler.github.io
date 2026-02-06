@@ -1,0 +1,64 @@
+import { useCallback } from "react";
+import { XIcon } from "~/components/icons";
+import { ChatContent } from "~/components/chat-content";
+import { useEscapeKey } from "~/hooks/use-escape-key";
+import { useFocusTrap } from "~/hooks/use-focus-trap";
+
+export function MobileSheet({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  const stableClose = useCallback(() => onClose(), [onClose]);
+  useEscapeKey(stableClose, open);
+  const trapRef = useFocusTrap<HTMLDivElement>(open);
+
+  return (
+    <div
+      className={`fixed inset-0 z-50 md:hidden ${
+        open ? "pointer-events-auto" : "pointer-events-none"
+      }`}
+      role="dialog"
+      aria-modal={open}
+    >
+      {/* Backdrop */}
+      <div
+        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+          open ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={onClose}
+      />
+      {/* Sheet */}
+      <div
+        ref={trapRef}
+        className={`absolute bottom-0 left-0 right-0 flex max-h-[85vh] flex-col rounded-t-2xl bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-neutral-900 ${
+          open ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="h-1 w-8 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+        </div>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-2 dark:border-neutral-800">
+          <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+            Chat
+          </span>
+          <button
+            onClick={onClose}
+            className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+            aria-label="Close chat"
+          >
+            <XIcon />
+          </button>
+        </div>
+        {/* Content */}
+        <div className="flex flex-1 flex-col py-8">
+          <ChatContent />
+        </div>
+      </div>
+    </div>
+  );
+}
