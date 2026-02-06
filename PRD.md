@@ -13,6 +13,7 @@ Single-page portfolio with adaptive split layout — portfolio content left, AI 
 - **Embeddings**: Google text-embedding-004
 - **Bot Protection**: Cloudflare Turnstile
 - **Analytics**: Vercel Analytics
+- **Error Monitoring**: Sentry (free tier)
 - **Hosting**: Vercel
 - **Testing**: Vitest
 
@@ -150,6 +151,20 @@ Minimal/clean. White space, typography-focused. References: linear.app, rauno.me
 
 Vercel Analytics (built-in, privacy-friendly).
 
+## Observability & Alerting
+
+**Sentry** (free tier) for error monitoring. No PII captured — all visitors are anonymous with ephemeral sessions.
+
+- **SDK**: `@sentry/react-router` (covers both client React and server-side React Router 7)
+- **What to capture**:
+  - Runtime errors — automatic via Sentry SDK integration
+  - AI provider fallback events — custom breadcrumb when Gemini fails and Anthropic takes over
+  - Both-providers-down errors — `Sentry.captureException()` on the existing catch-all error path
+  - Supabase connection failures — captured automatically as unhandled errors
+- **Alerts**: Email alerts on error spikes (Sentry default alert rules)
+- **Source maps**: Automatic via Sentry's Vercel integration (connects at deploy time)
+- **Privacy**: No user data captured. No session replay. Anonymous visitors only, ephemeral conversations.
+
 ## Phases
 
 ### Phase 1: Foundation
@@ -163,6 +178,7 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] Supabase client (SSR with `@supabase/ssr`)
 - [ ] Deploy skeleton to Vercel
 - [ ] Vercel Analytics
+- [ ] Sentry project setup + SDK integration (client + server)
 
 ### Phase 2: Content
 
@@ -188,6 +204,7 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] Server-side heuristics (2s delay, 500 char limit, dedup)
 - [ ] Sliding window rate limit (~50 msg/hr per session+IP)
 - [ ] API spend caps on provider dashboards
+- [ ] Sentry breadcrumbs for AI provider fallback events
 
 ### Phase 4: Polish & Ship
 
