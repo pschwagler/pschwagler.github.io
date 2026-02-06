@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.38",
     "@ai-sdk/google": "^3.0.22",
     "@ai-sdk/react": "^3.0.79",
     "@react-router/node": "^7.2.0",

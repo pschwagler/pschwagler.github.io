@@ -1,5 +1,6 @@
 import { convertToModelMessages, streamText } from "ai";
 import { google } from "@ai-sdk/google";
+import { anthropic } from "@ai-sdk/anthropic";
 
 const SYSTEM_PROMPT = `You are an AI assistant on Patrick Schwagler's personal portfolio website. Your role is to answer questions about Patrick's professional experience, skills, and projects.
 
@@ -63,13 +64,22 @@ export async function action({ request }: { request: Request }) {
     const { messages } = await request.json();
     const modelMessages = await convertToModelMessages(messages);
 
-    const result = streamText({
-      model: google("gemini-2.5-flash"),
-      system: SYSTEM_PROMPT,
-      messages: modelMessages,
-    });
-
-    return result.toUIMessageStreamResponse();
+    try {
+      const result = streamText({
+        model: google("gemini-2.5-flash"),
+        system: SYSTEM_PROMPT,
+        messages: modelMessages,
+      });
+      return result.toUIMessageStreamResponse();
+    } catch {
+      // Gemini failed — fall back to Anthropic (transparent to user)
+      const result = streamText({
+        model: anthropic("claude-sonnet-4-5-20250929"),
+        system: SYSTEM_PROMPT,
+        messages: modelMessages,
+      });
+      return result.toUIMessageStreamResponse();
+    }
   } catch {
     return new Response("Something went wrong — try again", { status: 500 });
   }
