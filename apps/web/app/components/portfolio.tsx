@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { GitHubIcon, LinkedInIcon } from "~/components/icons";
 import {
   APPS,
@@ -49,21 +50,70 @@ function IntroSection() {
 }
 
 function AppsSection() {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
   return (
     <section className="mt-16 space-y-4">
       <SectionHeading>Apps</SectionHeading>
       <div className="space-y-3">
-        {APPS.map((app) => (
-          <div
-            key={app.name}
-            className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800"
-          >
-            <p className="font-medium">{app.name}</p>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              {app.description}
-            </p>
-          </div>
-        ))}
+        {APPS.map((app) => {
+          const isExpanded = expanded === app.name;
+          return (
+            <div
+              key={app.name}
+              className="rounded-lg border border-neutral-200 dark:border-neutral-800"
+            >
+              <button
+                type="button"
+                onClick={() => setExpanded(isExpanded ? null : app.name)}
+                className="flex w-full items-center gap-3 p-4 text-left"
+                aria-expanded={isExpanded}
+              >
+                <span className="text-xl" aria-hidden="true">
+                  {app.icon}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">{app.name}</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                    {app.description}
+                  </p>
+                </div>
+                <span
+                  className={`text-neutral-400 transition-transform duration-200 dark:text-neutral-500 ${isExpanded ? "rotate-180" : ""}`}
+                  aria-hidden="true"
+                >
+                  ▾
+                </span>
+              </button>
+              <div
+                className={`grid transition-[grid-template-rows] duration-200 ${isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+              >
+                <div className="overflow-hidden">
+                  <div className="border-t border-neutral-200 px-4 pb-4 pt-3 dark:border-neutral-800">
+                    <div className="mb-3 flex flex-wrap gap-1.5">
+                      {app.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <a
+                      href={app.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100"
+                    >
+                      Visit {app.name} →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
