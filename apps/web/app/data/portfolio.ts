@@ -1,3 +1,15 @@
+export type SocialPlatform = "github" | "linkedin";
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  url: string;
+}
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  { platform: "github", url: "https://github.com/pschwagler" },
+  { platform: "linkedin", url: "https://linkedin.com/in/pschwagler" },
+];
+
 export interface AppItem {
   name: string;
   description: string;
