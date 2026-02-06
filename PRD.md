@@ -2,14 +2,17 @@
 
 ## Vision
 
-Single-page portfolio site with an integrated AI chat panel. Visitors land on an adaptive split layout — portfolio content on the left, AI chat on the right (open by default). The AI answers questions about Patrick's career, skills, and projects using RAG over curated content.
+Single-page portfolio with adaptive split layout — portfolio content left, AI chat right (open by default). Visitors explore Patrick's professional experience through expandable widgets and conversational AI. Anonymous visitors only, ephemeral conversations, no auth.
 
 ## Stack
 
 - **Framework**: React Router 7 (SSR, Vite)
 - **Styling**: Tailwind CSS v4
-- **Backend**: Supabase (DB, pgvector, storage)
-- **AI**: Vercel AI SDK v4 + Anthropic Claude
+- **Backend**: Supabase (DB, pgvector)
+- **AI**: Vercel AI SDK v4 + Gemini 2.5 Flash (primary) + Anthropic Claude (fallback)
+- **Embeddings**: Google text-embedding-004
+- **Bot Protection**: Cloudflare Turnstile
+- **Analytics**: Vercel Analytics
 - **Hosting**: Vercel
 - **Testing**: Vitest
 
@@ -17,7 +20,7 @@ Single-page portfolio site with an integrated AI chat panel. Visitors land on an
 
 ### Adaptive Split Layout
 
-Default state: chat panel open. Portfolio content on the left, chat on the right.
+Default: chat panel open. Portfolio left, chat right.
 
 ```
 DESKTOP (chat open — default)           DESKTOP (chat collapsed)
@@ -25,11 +28,11 @@ DESKTOP (chat open — default)           DESKTOP (chat collapsed)
 │  Portfolio      │  Chat       │        │      (centered 3xl)      │
 │  (shifts left)  │  panel      │        │                          │
 │                 │  ~380px     │        │   Intro                  │
-│  Intro          │             │        │   Projects [expandable]  │
-│  Projects       │  suggested  │        │   Experience             │
-│  Experience     │  questions  │        │                          │
-│                 │             │        │         [💬 reopen chat] │
-│                 │  [input]    │        │                          │
+│  Intro          │             │        │   Apps                   │
+│  Apps           │  suggested  │        │   Experience             │
+│  Experience     │  questions  │        │   Skills                 │
+│  Skills         │             │        │                          │
+│                 │  [input]    │        │         [💬 reopen chat] │
 └────────────────┴─────────────┘        └──────────────────────────┘
 
 MOBILE
@@ -38,39 +41,45 @@ MOBILE
 │  (full width)     │
 │                   │
 │  Intro            │
-│  Projects         │
+│  Apps             │
 │  Experience       │
+│  Skills           │
 │                   │
-│  [💬 FAB button]  │  → opens bottom sheet (half/full screen)
+│  [💬 FAB button]  │  → opens bottom sheet
 └──────────────────┘
 ```
 
 ### Portfolio Content (left panel)
 
-Single scrollable page with sections:
+Single scrollable page:
 
-- **Intro** — Name, tagline, brief bio
-- **Projects** — Expandable cards (summary → detail on click)
-- **Experience** — Work history timeline (C3.ai: FDE → Senior FDE → Manager, FDE)
+- **Intro** — Name, tagline, brief bio. GitHub + LinkedIn icon links.
+- **Apps** — Side project showcase (separate from Experience). Expandable widget cards:
+  - **Beach League** — card links to live app
+  - **GiftWell** — card links to live app
+  - Click interaction: opens chat panel + auto-sends "Tell me about [project]"
+- **Experience** — C3.ai timeline: FDE → Senior FDE → Manager, FDE. Details populated from content files.
+- **Skills / Tech Stack** — Visual tags/pills on the page.
 
 ### Chat Panel (right panel, ~380px)
 
 - Open by default on desktop
 - Collapsible — content reflows to centered max-w-3xl when closed
-- Smooth CSS transition between states
+- Smooth CSS slide transition
+- **Ephemeral** — fresh conversation each page load, no DB storage
 - **No chat bubbles** — clean typography:
   - User messages: right-aligned, no bubble background
-  - AI responses: left-aligned, rich markdown/cards
-  - Citations: inline links that scroll the portfolio panel to referenced sections
-- Suggested question chips: "What did Patrick build at C3?" / "What's his tech stack?"
-- Typing indicator: subtle shimmer, not bouncing dots
-- Context-aware: suggested questions adapt to user's scroll position
+  - AI responses: left-aligned, rich markdown
+- **No citations / cross-panel linking**
+- Suggested question chips: 3–4 static starters (e.g., "What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League")
+- Typing indicator: subtle shimmer
+- **Input**: Multiline auto-expanding textarea. Enter to send, Shift+Enter for newline. Max ~500 chars.
 
 ### Mobile
 
 - Portfolio content full-width
-- Floating action button (bottom-right) opens chat as bottom sheet
-- Bottom sheet: swipe up to half-screen or full-screen, swipe down to dismiss
+- FAB (bottom-right) opens chat as bottom sheet
+- Bottom sheet: swipe up half/full, swipe down to dismiss
 
 ## Content Directory
 
@@ -79,75 +88,94 @@ content/
 ├── bio.md              # Personal intro, values, what drives me
 ├── experience.md       # C3.ai timeline, role details, responsibilities
 ├── projects/
-│   ├── project-1.md    # Individual project details
-│   └── ...
+│   ├── beach-league.md # Beach League details
+│   └── giftwell.md     # GiftWell details
 ├── skills.md           # Tech stack, languages, frameworks
-├── interview.md        # Q&A about career, motivations, what makes me different
-└── meta.md             # How to talk about Patrick (tone, style, boundaries)
+├── interview.md        # Q&A about career, motivations, differentiators
+└── meta.md             # Tone, style, boundaries for AI responses
 ```
 
-**Pipeline**: `content/*.md` → chunk → embed → Supabase pgvector. Rebuild on deploy or via script.
+**Pipeline**: `content/*.md` → chunk → embed via Google text-embedding-004 → Supabase pgvector. Rebuild on deploy or via script.
 
 ## AI Chat Architecture
 
 ```
-User question
+User sends message
+  → Cloudflare Turnstile token validation (server-side)
+  → Server-side heuristics check (rate, length, dedup)
   → React Router action
   → Vercel AI SDK streamText()
   → Supabase pgvector: retrieve relevant content chunks (RAG)
-  → Anthropic Claude: system prompt + retrieved context + user message
+  → Gemini 2.5 Flash (primary) or Anthropic Claude (fallback)
+    system prompt + retrieved context + user message
   → Stream response back to client
-  → Save conversation to Supabase messages table
 ```
+
+**Provider strategy**: `@ai-sdk/google` with Gemini 2.5 Flash primary. Fall back to `@ai-sdk/anthropic` Claude on error/timeout. Google context caching on system prompt + RAG context to reduce per-request token cost.
 
 **Auth**: Anonymous visitors only. No sign-in.
 
-**Rate limiting**: IP-based, ~20 messages/hour per visitor.
+## Bot Protection & Rate Limiting
+
+| Layer | Mechanism                 | Detail                                                                          |
+| ----- | ------------------------- | ------------------------------------------------------------------------------- |
+| 1     | Cloudflare Turnstile      | Invisible CAPTCHA (free). Validate token server-side before LLM call.           |
+| 2     | Server-side heuristics    | Min 2s between messages. Max ~500 chars. Reject duplicate consecutive messages. |
+| 3     | Sliding window rate limit | ~50 messages/hour per session+IP (valid Turnstile token required).              |
+| 4     | API spend caps            | Hard limits on Google AI + Anthropic dashboards.                                |
 
 ## Design
 
-Minimal/clean. White space, typography-focused, subtle purposeful animations. References: linear.app, rauno.me. Neutral color palette. No chrome/widget feel — chat is native to the layout.
+Minimal/clean. White space, typography-focused. References: linear.app, rauno.me. Neutral color palette.
+
+- **Dark mode**: Toggle in nav. System preference (`prefers-color-scheme`) as default.
+- **Animations**: Subtle fade-in on page load. Smooth scroll. Chat panel slide transition. No section reveals, no parallax.
+
+## Analytics
+
+Vercel Analytics (built-in, privacy-friendly).
 
 ## Phases
 
-### Phase 1: Clean Slate ✅
+### Phase 1: Foundation
 
-- [x] Delete AI Interviewer code
-- [x] Swap dependencies (Supabase, AI SDK, Tailwind)
-- [x] Rewrite CLAUDE.md
-- [x] Scaffold skeleton routes
-- [x] Verify all gates pass
-
-### Phase 2: Foundation
-
-- [ ] Implement adaptive split layout shell (single route)
-- [ ] Chat panel component (collapsible, responsive)
-- [ ] Portfolio content sections (intro, projects, experience)
+- [ ] Adaptive split layout shell (single route)
+- [ ] Chat panel component (collapsible, slide transition, responsive)
+- [ ] Portfolio sections: Intro (with GitHub/LinkedIn), Apps, Experience, Skills
 - [ ] Mobile bottom sheet for chat
-- [ ] Configure Supabase client (SSR with `@supabase/ssr`)
+- [ ] Dark mode toggle + system preference detection
+- [ ] Supabase client (SSR with `@supabase/ssr`)
 - [ ] Deploy skeleton to Vercel
+- [ ] Vercel Analytics
 
-### Phase 3: Content
+### Phase 2: Content
 
 - [ ] Create `content/` directory with markdown files
-- [ ] Interview process → populate content files
-- [ ] Build expandable project cards
-- [ ] Experience timeline component
-- [ ] Responsive design + dark mode
+- [ ] Interview → populate content files
+- [ ] Expandable app cards (Beach League, GiftWell) with live links
+- [ ] App card click → open chat + auto-send "Tell me about [project]"
+- [ ] Experience timeline component (C3.ai role progression)
+- [ ] Skills/tech stack visual tags/pills
 
-### Phase 4: AI Chat
+### Phase 3: AI Chat
 
-- [ ] Supabase tables: `documents` (pgvector), `conversations`, `messages`
-- [ ] Content embedding pipeline (markdown → chunks → embeddings → pgvector)
+- [ ] Add `@ai-sdk/google`, configure Gemini 2.5 Flash primary provider
+- [ ] Configure `@ai-sdk/anthropic` as fallback
+- [ ] Supabase `documents` table (pgvector)
+- [ ] Embedding pipeline: markdown → chunks → Google text-embedding-004 → pgvector
 - [ ] Vercel AI SDK route handler with streaming
-- [ ] Chat UI (message list, input, streaming indicator, suggested questions)
-- [ ] System prompt with professional context + `content/meta.md`
-- [ ] Cross-panel citations (AI references → scroll portfolio)
-- [ ] Rate limiting + error handling
+- [ ] Chat UI: message list, auto-expanding textarea, shimmer indicator
+- [ ] Static suggested question chips
+- [ ] System prompt + `content/meta.md`
+- [ ] Google context caching for system prompt + RAG context
+- [ ] Cloudflare Turnstile (client widget + server validation)
+- [ ] Server-side heuristics (2s delay, 500 char limit, dedup)
+- [ ] Sliding window rate limit (~50 msg/hr per session+IP)
+- [ ] API spend caps on provider dashboards
 
-### Phase 5: Polish & Ship
+### Phase 4: Polish & Ship
 
 - [ ] SEO: meta tags, Open Graph, structured data
-- [ ] Performance: lighthouse audit, image optimization
-- [ ] Accessibility: keyboard nav, screen reader, contrast
+- [ ] Performance: Lighthouse audit, image optimization
+- [ ] Accessibility: keyboard nav, screen reader, contrast (both themes)
 - [ ] Production deploy + custom domain

@@ -30,8 +30,8 @@ Pre-commit hook runs these via Husky.
 - **Monorepo**: Turborepo + pnpm workspaces
 - **Framework**: React Router 7 (SSR, Vite)
 - **Styling**: Tailwind CSS v4
-- **Backend**: Supabase (auth, DB, pgvector, storage)
-- **AI**: Vercel AI SDK v4 + Anthropic Claude
+- **Backend**: Supabase (DB, pgvector)
+- **AI**: Vercel AI SDK v4 + Gemini 2.5 Flash (primary) + Anthropic Claude (fallback)
 - **Testing**: Vitest
 - **Hosting**: Vercel
 
