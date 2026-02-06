@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTheme } from "~/hooks/use-theme";
+import { toggleTheme } from "~/hooks/use-theme";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { Portfolio } from "~/components/portfolio";
 import { ChatPanel } from "~/components/chat-panel";
@@ -16,7 +16,6 @@ export function meta() {
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
-  const { toggleTheme } = useTheme();
 
   return (
     <div className="flex min-h-screen">

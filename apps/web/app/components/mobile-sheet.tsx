@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import { XIcon } from "~/components/icons";
+import { ChatHeader } from "~/components/chat-header";
 import { ChatContent } from "~/components/chat-content";
 import { useEscapeKey } from "~/hooks/use-escape-key";
 import { useFocusTrap } from "~/hooks/use-focus-trap";
@@ -11,8 +10,7 @@ export function MobileSheet({
   open: boolean;
   onClose: () => void;
 }) {
-  const stableClose = useCallback(() => onClose(), [onClose]);
-  useEscapeKey(stableClose, open);
+  useEscapeKey(onClose, open);
   const trapRef = useFocusTrap<HTMLDivElement>(open);
 
   return (
@@ -22,6 +20,8 @@ export function MobileSheet({
       }`}
       role="dialog"
       aria-modal={open}
+      aria-hidden={!open}
+      {...(!open && { inert: true })}
     >
       {/* Backdrop */}
       <div
@@ -29,6 +29,7 @@ export function MobileSheet({
           open ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
+        aria-hidden="true"
       />
       {/* Sheet */}
       <div
@@ -41,19 +42,7 @@ export function MobileSheet({
         <div className="flex justify-center pt-3 pb-1">
           <div className="h-1 w-8 rounded-full bg-neutral-300 dark:bg-neutral-600" />
         </div>
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-2 dark:border-neutral-800">
-          <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-            Chat
-          </span>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
-            aria-label="Close chat"
-          >
-            <XIcon />
-          </button>
-        </div>
+        <ChatHeader onClose={onClose} />
         {/* Content */}
         <div className="flex flex-1 flex-col py-8">
           <ChatContent />
