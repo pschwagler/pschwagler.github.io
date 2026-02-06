@@ -57,16 +57,23 @@ export function Portfolio() {
         <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
           Experience
         </h2>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {EXPERIENCE.map((exp) => (
             <div
               key={exp.title}
-              className="text-neutral-600 dark:text-neutral-400"
+              className="flex items-baseline justify-between gap-4"
             >
-              <p className="font-medium text-neutral-900 dark:text-neutral-50">
-                {exp.title}
+              <div>
+                <p className="font-medium text-neutral-900 dark:text-neutral-50">
+                  {exp.title}
+                </p>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  {exp.company}
+                </p>
+              </div>
+              <p className="shrink-0 text-sm text-neutral-400 dark:text-neutral-500">
+                {exp.period}
               </p>
-              <p className="text-sm">{exp.company}</p>
             </div>
           ))}
         </div>

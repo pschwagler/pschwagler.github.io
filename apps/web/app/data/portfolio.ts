@@ -6,6 +6,7 @@ export interface AppItem {
 export interface ExperienceItem {
   title: string;
   company: string;
+  period: string;
 }
 
 export const APPS: AppItem[] = [
@@ -14,9 +15,21 @@ export const APPS: AppItem[] = [
 ];
 
 export const EXPERIENCE: ExperienceItem[] = [
-  { title: "Manager, Forward Deployed Engineering", company: "C3.ai" },
-  { title: "Senior Forward Deployed Engineer", company: "C3.ai" },
-  { title: "Forward Deployed Engineer", company: "C3.ai" },
+  {
+    title: "Manager, Forward Deployed Engineering",
+    company: "C3.ai",
+    period: "2022 – 2024",
+  },
+  {
+    title: "Senior Forward Deployed Engineer",
+    company: "C3.ai",
+    period: "2021 – 2022",
+  },
+  {
+    title: "Forward Deployed Engineer",
+    company: "C3.ai",
+    period: "2019 – 2021",
+  },
 ];
 
 export interface SkillGroup {
