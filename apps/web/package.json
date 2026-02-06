@@ -13,8 +13,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.22",
+    "@ai-sdk/react": "^3.0.79",
     "@react-router/node": "^7.2.0",
     "@react-router/serve": "^7.2.0",
+    "ai": "^6.0.77",
     "isbot": "^5.1.17",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
