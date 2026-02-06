@@ -19,13 +19,22 @@ export const EXPERIENCE: ExperienceItem[] = [
   { title: "Forward Deployed Engineer", company: "C3.ai" },
 ];
 
-export const SKILLS = [
-  "TypeScript",
-  "React",
-  "Node.js",
-  "Python",
-  "SQL",
-  "AWS",
-  "Tailwind",
-  "Vite",
-] as const;
+export interface SkillGroup {
+  category: string;
+  items: string[];
+}
+
+export const SKILL_GROUPS: SkillGroup[] = [
+  {
+    category: "Languages",
+    items: ["TypeScript", "JavaScript", "Python", "SQL"],
+  },
+  {
+    category: "Frameworks & Libraries",
+    items: ["React", "Node.js", "Tailwind CSS", "Vite"],
+  },
+  {
+    category: "Platforms & Tools",
+    items: ["AWS", "Vercel", "Supabase", "Git"],
+  },
+];
