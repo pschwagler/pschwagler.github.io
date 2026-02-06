@@ -1,5 +1,5 @@
 import { GitHubIcon, LinkedInIcon } from "~/components/icons";
-import { APPS, EXPERIENCE, SKILLS } from "~/data/portfolio";
+import { APPS, EXPERIENCE, SKILL_GROUPS } from "~/data/portfolio";
 
 export function Portfolio() {
   return (
@@ -77,14 +77,23 @@ export function Portfolio() {
         <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
           Skills
         </h2>
-        <div className="flex flex-wrap gap-2">
-          {SKILLS.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-700 dark:border-neutral-800 dark:text-neutral-300"
-            >
-              {skill}
-            </span>
+        <div className="space-y-4">
+          {SKILL_GROUPS.map((group) => (
+            <div key={group.category}>
+              <p className="mb-2 text-xs font-medium text-neutral-400 dark:text-neutral-500">
+                {group.category}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-700 dark:border-neutral-800 dark:text-neutral-300"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
