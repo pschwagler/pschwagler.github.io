@@ -59,14 +59,18 @@ Built and deployed enterprise AI applications on the C3 AI platform. Worked dire
 **Why side projects?** They're where he gets to build exactly what he wants. Beach League and GiftWell both started as real problems he wanted to solve. They keep his product instincts sharp and let him experiment with new technologies.`;
 
 export async function action({ request }: { request: Request }) {
-  const { messages } = await request.json();
-  const modelMessages = await convertToModelMessages(messages);
+  try {
+    const { messages } = await request.json();
+    const modelMessages = await convertToModelMessages(messages);
 
-  const result = streamText({
-    model: google("gemini-2.5-flash"),
-    system: SYSTEM_PROMPT,
-    messages: modelMessages,
-  });
+    const result = streamText({
+      model: google("gemini-2.5-flash"),
+      system: SYSTEM_PROMPT,
+      messages: modelMessages,
+    });
 
-  return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse();
+  } catch {
+    return new Response("Something went wrong — try again", { status: 500 });
+  }
 }

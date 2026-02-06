@@ -17,7 +17,7 @@ function getTextContent(message: {
 }
 
 export function ChatContent() {
-  const { messages, sendMessage, status } = useChat();
+  const { messages, sendMessage, status, error, clearError } = useChat();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -111,6 +111,20 @@ export function ChatContent() {
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-neutral-400 [animation-delay:150ms]" />
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-neutral-400 [animation-delay:300ms]" />
                 </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="text-left">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  Something went wrong — try again.{" "}
+                  <button
+                    onClick={clearError}
+                    className="underline underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
+                  >
+                    Dismiss
+                  </button>
+                </p>
               </div>
             )}
           </div>
