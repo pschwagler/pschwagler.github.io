@@ -13,6 +13,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export interface AppItem {
   name: string;
   description: string;
+  icon: string;
+  techStack: string[];
+  url: string;
 }
 
 export interface ExperienceItem {
@@ -22,8 +25,20 @@ export interface ExperienceItem {
 }
 
 export const APPS: AppItem[] = [
-  { name: "Beach League", description: "Beach volleyball league management" },
-  { name: "GiftWell", description: "Thoughtful gift recommendations" },
+  {
+    name: "Beach League",
+    description: "Beach volleyball league management",
+    icon: "🏐",
+    techStack: ["React", "TypeScript", "Node.js", "PostgreSQL"],
+    url: "https://beachleague.app",
+  },
+  {
+    name: "GiftWell",
+    description: "Thoughtful gift recommendations",
+    icon: "🎁",
+    techStack: ["React", "TypeScript", "AI/ML", "Vercel"],
+    url: "https://giftwell.app",
+  },
 ];
 
 export const EXPERIENCE: ExperienceItem[] = [
