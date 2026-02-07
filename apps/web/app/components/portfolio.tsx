@@ -38,7 +38,7 @@ function IntroSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
-              aria-label={link.platform}
+              aria-label={`${link.platform === "github" ? "GitHub" : "LinkedIn"} profile`}
             >
               <Icon />
             </a>
@@ -72,6 +72,7 @@ function AppsSection({
                 onClick={() => setExpanded(isExpanded ? null : app.name)}
                 className="flex w-full items-center gap-3 p-4 text-left"
                 aria-expanded={isExpanded}
+                aria-label={`${isExpanded ? "Collapse" : "Expand"} ${app.name}`}
               >
                 <span className="text-xl" aria-hidden="true">
                   {app.icon}

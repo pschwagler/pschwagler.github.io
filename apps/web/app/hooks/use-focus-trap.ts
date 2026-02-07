@@ -11,6 +11,10 @@ export function useFocusTrap<T extends HTMLElement>(active: boolean) {
     if (!active) return;
     previousFocus.current = document.activeElement as HTMLElement;
 
+    // Move focus into the trapped region
+    const firstFocusable = ref.current?.querySelector<HTMLElement>(FOCUSABLE);
+    firstFocusable?.focus();
+
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== "Tab" || !ref.current) return;
       const focusable = Array.from(

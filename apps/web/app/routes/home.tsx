@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
-import { toggleTheme } from "~/hooks/use-theme";
+import { useMemo, useState } from "react";
+import { toggleTheme } from "~/lib/theme";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { Portfolio } from "~/components/portfolio";
 import { ChatPanel } from "~/components/chat-panel";
@@ -58,7 +58,10 @@ export default function Home() {
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const { messages, sendMessage, status, error, clearError } = useChat();
 
-  const chatProps = { messages, sendMessage, status, error, clearError };
+  const chatProps = useMemo(
+    () => ({ messages, sendMessage, status, error, clearError }),
+    [messages, sendMessage, status, error, clearError]
+  );
 
   function handleAskAboutApp(appName: string) {
     const isDesktop = window.matchMedia("(min-width: 768px)").matches;

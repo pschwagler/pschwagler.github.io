@@ -7,15 +7,8 @@ import {
   CHAT_PROMPT,
   SUGGESTED_QUESTIONS,
 } from "~/data/chat";
-
-function getTextContent(message: {
-  parts: Array<{ type: string; text?: string }>;
-}): string {
-  return message.parts
-    .filter((p) => p.type === "text")
-    .map((p) => p.text ?? "")
-    .join("");
-}
+import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
+import { getTextContent } from "~/lib/messages";
 
 export interface ChatContentProps {
   messages: UIMessage[];
@@ -158,7 +151,7 @@ export function ChatContent({
           placeholder={CHAT_PLACEHOLDER}
           aria-label="Chat message"
           rows={1}
-          maxLength={500}
+          maxLength={MAX_MESSAGE_LENGTH}
           disabled={isStreaming}
           className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus:border-neutral-600"
         />

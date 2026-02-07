@@ -1,10 +1,19 @@
 import { action } from "./api.chat";
 
 // Mock AI SDK — we only test heuristics, not LLM calls
+function mockStream() {
+  return new ReadableStream({
+    start(controller) {
+      controller.enqueue("ok");
+      controller.close();
+    },
+  });
+}
+
 vi.mock("ai", () => ({
   convertToModelMessages: vi.fn().mockResolvedValue([]),
   streamText: vi.fn().mockReturnValue({
-    toUIMessageStreamResponse: () => new Response("ok"),
+    toUIMessageStream: () => mockStream(),
   }),
 }));
 vi.mock("@ai-sdk/google", () => ({
@@ -137,5 +146,16 @@ describe("api.chat heuristics", () => {
       request: makeRequest(messages, "10.0.0.9"),
     });
     expect(res.status).toBe(200);
+  });
+
+  it("returns 400 for malformed JSON body", async () => {
+    const request = new Request("http://localhost/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "not valid json{{{",
+    });
+    const res = await action({ request });
+    expect(res.status).toBe(400);
+    expect(await res.text()).toBe("Invalid request body");
   });
 });

@@ -1,4 +1,4 @@
-import { toggleTheme } from "./use-theme";
+import { toggleTheme } from "./theme";
 
 describe("toggleTheme", () => {
   beforeEach(() => {

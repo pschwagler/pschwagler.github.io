@@ -8,9 +8,10 @@ import skillsRaw from "@content/skills.md?raw";
 import interviewRaw from "@content/interview.md?raw";
 import beachLeagueRaw from "@content/projects/beach-league.md?raw";
 import giftwellRaw from "@content/projects/giftwell.md?raw";
+import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
+import { getLastUserMessageText } from "~/lib/messages";
 
 // --- Server-side heuristics (PRD Layer 2) ---
-const MAX_MESSAGE_LENGTH = 500;
 const MIN_MESSAGE_INTERVAL_MS = 2000;
 
 interface ClientState {
@@ -39,23 +40,6 @@ function getClientIp(request: Request): string {
   return forwarded?.split(",")[0]?.trim() ?? "unknown";
 }
 
-function getLastUserMessageText(
-  messages: Array<{
-    role: string;
-    parts: Array<{ type: string; text?: string }>;
-  }>
-): string | null {
-  for (let i = messages.length - 1; i >= 0; i--) {
-    if (messages[i].role === "user") {
-      return messages[i].parts
-        .filter((p) => p.type === "text")
-        .map((p) => p.text ?? "")
-        .join("");
-    }
-  }
-  return null;
-}
-
 const SYSTEM_PROMPT = [
   "You are an AI assistant on Patrick Schwagler's personal portfolio website. Your role is to answer questions about Patrick's professional experience, skills, and projects.",
   metaRaw,
@@ -69,12 +53,93 @@ const SYSTEM_PROMPT = [
   giftwellRaw,
 ].join("\n\n");
 
+/**
+ * Stream with fallback: tries the primary model first, and if the stream
+ * errors before any data is sent, transparently retries with the fallback.
+ * Once data has started flowing, errors are surfaced to the client.
+ */
+function streamWithFallback(
+  modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>
+): Response {
+  const primary = streamText({
+    model: google("gemini-2.5-flash"),
+    system: SYSTEM_PROMPT,
+    messages: modelMessages,
+  });
+
+  const primaryStream = primary.toUIMessageStream();
+  const reader = primaryStream.getReader();
+  let started = false;
+
+  const output = new ReadableStream({
+    async start(controller) {
+      try {
+        // Read chunks from primary — if it fails before any data,
+        // fall back to the secondary model.
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.close();
+            return;
+          }
+          started = true;
+          controller.enqueue(value);
+        }
+      } catch (error) {
+        if (!started) {
+          // Primary failed before sending data — fall back
+          try {
+            const fallback = streamText({
+              model: anthropic("claude-sonnet-4-5-20250929"),
+              system: SYSTEM_PROMPT,
+              messages: modelMessages,
+            });
+            const fallbackStream = fallback.toUIMessageStream();
+            const fallbackReader = fallbackStream.getReader();
+            while (true) {
+              const { done, value } = await fallbackReader.read();
+              if (done) {
+                controller.close();
+                return;
+              }
+              controller.enqueue(value);
+            }
+          } catch {
+            controller.error(error);
+          }
+        } else {
+          controller.error(error);
+        }
+      }
+    },
+    cancel() {
+      reader.cancel();
+    },
+  });
+
+  return new Response(output, {
+    headers: { "Content-Type": "text/event-stream" },
+  });
+}
+
 export async function action({ request }: { request: Request }) {
+  let body: { messages?: unknown };
   try {
-    const { messages } = await request.json();
+    body = await request.json();
+  } catch {
+    return new Response("Invalid request body", { status: 400 });
+  }
+
+  try {
+    const { messages } = body;
 
     // --- Heuristics validation ---
-    const lastUserText = getLastUserMessageText(messages);
+    const lastUserText = getLastUserMessageText(
+      messages as Array<{
+        role: string;
+        parts: Array<{ type: string; text?: string }>;
+      }>
+    );
 
     if (!lastUserText || lastUserText.trim().length === 0) {
       return new Response("Message cannot be empty", { status: 400 });
@@ -107,25 +172,12 @@ export async function action({ request }: { request: Request }) {
       lastMessage: lastUserText.trim(),
     });
 
-    // --- LLM call ---
-    const modelMessages = await convertToModelMessages(messages);
+    // --- LLM call with fallback ---
+    const modelMessages = await convertToModelMessages(
+      messages as Parameters<typeof convertToModelMessages>[0]
+    );
 
-    try {
-      const result = streamText({
-        model: google("gemini-2.5-flash"),
-        system: SYSTEM_PROMPT,
-        messages: modelMessages,
-      });
-      return result.toUIMessageStreamResponse();
-    } catch {
-      // Gemini failed — fall back to Anthropic (transparent to user)
-      const result = streamText({
-        model: anthropic("claude-sonnet-4-5-20250929"),
-        system: SYSTEM_PROMPT,
-        messages: modelMessages,
-      });
-      return result.toUIMessageStreamResponse();
-    }
+    return streamWithFallback(modelMessages);
   } catch {
     return new Response("Something went wrong — try again", { status: 500 });
   }
