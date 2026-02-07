@@ -1,4 +1,5 @@
-import { useChat } from "@ai-sdk/react";
+import type { UIMessage } from "ai";
+import type { ChatStatus } from "ai";
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import Markdown from "react-markdown";
 import {
@@ -16,9 +17,21 @@ function getTextContent(message: {
     .join("");
 }
 
-export function ChatContent() {
-  const { messages, sendMessage, status, error, clearError } = useChat();
+export interface ChatContentProps {
+  messages: UIMessage[];
+  sendMessage: (params: { text: string }) => void;
+  status: ChatStatus;
+  error: Error | undefined;
+  clearError: () => void;
+}
 
+export function ChatContent({
+  messages,
+  sendMessage,
+  status,
+  error,
+  clearError,
+}: ChatContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

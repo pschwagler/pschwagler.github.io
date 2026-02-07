@@ -1,15 +1,16 @@
 import { ChatHeader } from "~/components/chat-header";
-import { ChatContent } from "~/components/chat-content";
+import { ChatContent, type ChatContentProps } from "~/components/chat-content";
 
 const PANEL_WIDTH = "w-[380px]";
 
 export function ChatPanel({
   open,
   onClose,
+  ...chatProps
 }: {
   open: boolean;
   onClose: () => void;
-}) {
+} & ChatContentProps) {
   return (
     <aside
       aria-hidden={!open}
@@ -22,7 +23,7 @@ export function ChatPanel({
     >
       <div className={`flex h-full ${PANEL_WIDTH} flex-col`}>
         <ChatHeader onClose={onClose} />
-        <ChatContent />
+        <ChatContent {...chatProps} />
       </div>
     </aside>
   );

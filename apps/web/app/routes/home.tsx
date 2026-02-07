@@ -1,3 +1,4 @@
+import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { toggleTheme } from "~/hooks/use-theme";
 import { ThemeToggle } from "~/components/theme-toggle";
@@ -16,6 +17,19 @@ export function meta() {
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const { messages, sendMessage, status, error, clearError } = useChat();
+
+  const chatProps = { messages, sendMessage, status, error, clearError };
+
+  function handleAskAboutApp(appName: string) {
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (isDesktop) {
+      setChatOpen(true);
+    } else {
+      setMobileSheetOpen(true);
+    }
+    sendMessage({ text: `Tell me about ${appName}` });
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -29,11 +43,15 @@ export default function Home() {
           <div className="mb-8 flex justify-end">
             <ThemeToggle onToggle={toggleTheme} />
           </div>
-          <Portfolio />
+          <Portfolio onAskAboutApp={handleAskAboutApp} />
         </div>
       </main>
 
-      <ChatPanel open={chatOpen} onClose={() => setChatOpen(false)} />
+      <ChatPanel
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        {...chatProps}
+      />
 
       {/* Desktop reopen chat button */}
       {!chatOpen && (
@@ -56,6 +74,7 @@ export default function Home() {
       <MobileSheet
         open={mobileSheetOpen}
         onClose={() => setMobileSheetOpen(false)}
+        {...chatProps}
       />
     </div>
   );

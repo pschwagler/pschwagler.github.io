@@ -49,7 +49,11 @@ function IntroSection() {
   );
 }
 
-function AppsSection() {
+function AppsSection({
+  onAskAboutApp,
+}: {
+  onAskAboutApp?: (appName: string) => void;
+}) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -100,14 +104,25 @@ function AppsSection() {
                         </span>
                       ))}
                     </div>
-                    <a
-                      href={app.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100"
-                    >
-                      Visit {app.name} →
-                    </a>
+                    <div className="flex items-center gap-4">
+                      <a
+                        href={app.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100"
+                      >
+                        Visit {app.name} →
+                      </a>
+                      {onAskAboutApp && (
+                        <button
+                          type="button"
+                          onClick={() => onAskAboutApp(app.name)}
+                          className="text-sm font-medium text-neutral-500 underline decoration-neutral-300 underline-offset-2 hover:text-neutral-900 hover:decoration-neutral-900 dark:text-neutral-400 dark:decoration-neutral-600 dark:hover:text-neutral-100 dark:hover:decoration-neutral-100"
+                        >
+                          Ask AI about this →
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -174,11 +189,15 @@ function SkillsSection() {
   );
 }
 
-export function Portfolio() {
+export function Portfolio({
+  onAskAboutApp,
+}: {
+  onAskAboutApp?: (appName: string) => void;
+}) {
   return (
     <>
       <IntroSection />
-      <AppsSection />
+      <AppsSection onAskAboutApp={onAskAboutApp} />
       <ExperienceSection />
       <SkillsSection />
     </>

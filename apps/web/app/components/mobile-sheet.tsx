@@ -1,15 +1,16 @@
 import { ChatHeader } from "~/components/chat-header";
-import { ChatContent } from "~/components/chat-content";
+import { ChatContent, type ChatContentProps } from "~/components/chat-content";
 import { useEscapeKey } from "~/hooks/use-escape-key";
 import { useFocusTrap } from "~/hooks/use-focus-trap";
 
 export function MobileSheet({
   open,
   onClose,
+  ...chatProps
 }: {
   open: boolean;
   onClose: () => void;
-}) {
+} & ChatContentProps) {
   useEscapeKey(onClose, open);
   const trapRef = useFocusTrap<HTMLDivElement>(open);
 
@@ -45,7 +46,7 @@ export function MobileSheet({
         <ChatHeader onClose={onClose} />
         {/* Content */}
         <div className="flex flex-1 flex-col py-8">
-          <ChatContent />
+          <ChatContent {...chatProps} />
         </div>
       </div>
     </div>
