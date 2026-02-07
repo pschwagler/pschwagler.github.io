@@ -117,7 +117,7 @@ export function ChatContent() {
             {error && (
               <div className="text-left">
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  Something went wrong — try again.{" "}
+                  {error.message || "Something went wrong — try again."}{" "}
                   <button
                     onClick={clearError}
                     className="underline underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
@@ -138,6 +138,7 @@ export function ChatContent() {
           onInput={onInput}
           placeholder={CHAT_PLACEHOLDER}
           rows={1}
+          maxLength={500}
           disabled={isStreaming}
           className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus:border-neutral-600"
         />
