@@ -8,9 +8,48 @@ import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
 
 export function meta() {
+  const title = "Patrick Schwagler";
+  const description =
+    "Forward Deployed Engineer, Engineering Manager, and AI Engineer. Explore my work at C3.ai, side projects, and tech stack.";
+
   return [
-    { title: "Patrick Schwagler" },
-    { name: "description", content: "Builder. Engineer. Leader." },
+    { title },
+    { name: "description", content: description },
+
+    // Open Graph
+    { property: "og:type", content: "website" },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:site_name", content: title },
+
+    // Twitter Card
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+
+    // JSON-LD structured data
+    {
+      "script:ld+json": {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: "Patrick Schwagler",
+        jobTitle: "Engineering Manager",
+        description,
+        url: "https://github.com/pschwagler",
+        sameAs: [
+          "https://github.com/pschwagler",
+          "https://linkedin.com/in/pschwagler",
+        ],
+        knowsAbout: [
+          "TypeScript",
+          "React",
+          "Node.js",
+          "Python",
+          "AI/ML",
+          "Cloud Architecture",
+        ],
+      },
+    },
   ];
 }
 
