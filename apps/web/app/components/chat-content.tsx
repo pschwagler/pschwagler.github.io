@@ -82,7 +82,9 @@ export function ChatContent({
               {SUGGESTED_QUESTIONS.map((q) => (
                 <button
                   key={q}
+                  type="button"
                   onClick={() => sendMessage({ text: q })}
+                  aria-label={`Ask: ${q}`}
                   className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600"
                 >
                   {q}
@@ -93,7 +95,7 @@ export function ChatContent({
         )}
 
         {hasMessages && (
-          <div className="flex flex-col gap-4 px-4 py-4">
+          <div className="flex flex-col gap-4 px-4 py-4" aria-live="polite">
             {messages.map((message) => {
               const text = getTextContent(message);
               if (!text) return null;
@@ -118,8 +120,12 @@ export function ChatContent({
             })}
 
             {isStreaming && messages[messages.length - 1]?.role === "user" && (
-              <div className="text-left">
-                <div className="inline-flex gap-1">
+              <div
+                className="text-left"
+                role="status"
+                aria-label="AI is responding"
+              >
+                <div className="inline-flex gap-1" aria-hidden="true">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-neutral-400" />
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-neutral-400 [animation-delay:150ms]" />
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-neutral-400 [animation-delay:300ms]" />
@@ -128,7 +134,7 @@ export function ChatContent({
             )}
 
             {error && (
-              <div className="text-left">
+              <div className="text-left" role="alert">
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
                   {error.message || "Something went wrong — try again."}{" "}
                   <button
@@ -150,6 +156,7 @@ export function ChatContent({
           onKeyDown={onKeyDown}
           onInput={onInput}
           placeholder={CHAT_PLACEHOLDER}
+          aria-label="Chat message"
           rows={1}
           maxLength={500}
           disabled={isStreaming}

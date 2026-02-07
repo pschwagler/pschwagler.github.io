@@ -22,6 +22,7 @@ export function MobileSheet({
       role="dialog"
       aria-modal={open}
       aria-hidden={!open}
+      aria-label="Chat"
       {...(!open && { inert: true })}
     >
       {/* Backdrop */}
@@ -40,7 +41,7 @@ export function MobileSheet({
         }`}
       >
         {/* Drag handle */}
-        <div className="flex justify-center pt-3 pb-1">
+        <div className="flex justify-center pt-3 pb-1" aria-hidden="true">
           <div className="h-1 w-8 rounded-full bg-neutral-300 dark:bg-neutral-600" />
         </div>
         <ChatHeader onClose={onClose} />
