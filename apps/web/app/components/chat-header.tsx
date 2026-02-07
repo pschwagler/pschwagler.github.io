@@ -8,7 +8,7 @@ export function ChatHeader({ onClose }: { onClose: () => void }) {
       </span>
       <button
         onClick={onClose}
-        className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+        className="rounded-sm text-neutral-400 hover:text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-500 dark:hover:text-neutral-300 dark:focus-visible:ring-neutral-500"
         aria-label="Close chat"
       >
         <XIcon />

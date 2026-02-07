@@ -37,7 +37,7 @@ function IntroSection() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+              className="rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
               aria-label={`${link.platform === "github" ? "GitHub" : "LinkedIn"} profile`}
             >
               <Icon />
@@ -70,7 +70,7 @@ function AppsSection({
               <button
                 type="button"
                 onClick={() => setExpanded(isExpanded ? null : app.name)}
-                className="flex w-full items-center gap-3 p-4 text-left"
+                className="flex w-full items-center gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-500"
                 aria-expanded={isExpanded}
                 aria-label={`${isExpanded ? "Collapse" : "Expand"} ${app.name}`}
               >
@@ -110,7 +110,7 @@ function AppsSection({
                         href={app.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100"
+                        className="rounded-sm text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100 dark:focus-visible:ring-neutral-500"
                       >
                         Visit {app.name} →
                       </a>
@@ -118,7 +118,7 @@ function AppsSection({
                         <button
                           type="button"
                           onClick={() => onAskAboutApp(app.name)}
-                          className="text-sm font-medium text-neutral-500 underline decoration-neutral-300 underline-offset-2 hover:text-neutral-900 hover:decoration-neutral-900 dark:text-neutral-400 dark:decoration-neutral-600 dark:hover:text-neutral-100 dark:hover:decoration-neutral-100"
+                          className="rounded-sm text-sm font-medium text-neutral-500 underline decoration-neutral-300 underline-offset-2 hover:text-neutral-900 hover:decoration-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:decoration-neutral-600 dark:hover:text-neutral-100 dark:hover:decoration-neutral-100 dark:focus-visible:ring-neutral-500"
                         >
                           Ask AI about this →
                         </button>

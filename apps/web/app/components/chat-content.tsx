@@ -78,7 +78,7 @@ export function ChatContent({
                   type="button"
                   onClick={() => sendMessage({ text: q })}
                   aria-label={`Ask: ${q}`}
-                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600"
+                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
                 >
                   {q}
                 </button>
@@ -132,7 +132,7 @@ export function ChatContent({
                   {error.message || "Something went wrong — try again."}{" "}
                   <button
                     onClick={clearError}
-                    className="underline underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
+                    className="rounded-sm underline underline-offset-2 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:hover:text-neutral-200 dark:focus-visible:ring-neutral-500"
                   >
                     Dismiss
                   </button>
@@ -153,7 +153,7 @@ export function ChatContent({
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
           disabled={isStreaming}
-          className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-neutral-400 focus:border-neutral-300 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus:border-neutral-600"
+          className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus-visible:ring-neutral-500"
         />
       </div>
     </>
