@@ -116,6 +116,28 @@ User sends message
 
 **Provider strategy**: `@ai-sdk/google` with Gemini 2.5 Flash primary. Fall back to `@ai-sdk/anthropic` Claude on error/timeout (10s timeout triggers fallback). Google context caching on system prompt + RAG context to reduce per-request token cost. Fallback is transparent to user — no "switching providers" message.
 
+### GitHub Repo Browsing (Tool Use)
+
+The AI can answer questions about Patrick's public GitHub repos (architecture, ERDs, workflows, tech decisions) via live tool calls to the GitHub API.
+
+**How it works**: Vercel AI SDK `tools` parameter on `streamText()`. The model decides when a question warrants fetching repo content and calls the tool autonomously.
+
+**Tools**:
+
+| Tool                    | Description                        | Returns                          |
+| ----------------------- | ---------------------------------- | -------------------------------- |
+| `listRepoMarkdownFiles` | List `.md` files in a repo         | Array of file paths              |
+| `readRepoMarkdownFile`  | Read a specific `.md` file by path | File content (truncated to 20KB) |
+
+**Constraints**:
+
+- **Repo allowlist** (server-side): Only curated public repos — `bio`, `beach-league`, `giftwell`. Reject any request for a repo not in the list.
+- **Markdown files only**: Tools only expose `.md` files (READMEs, docs, architecture docs, etc.). No source code, no config files.
+- **Truncation**: Files larger than 20KB are truncated with a `[truncated]` marker.
+- **GitHub API auth**: Unauthenticated (60 req/hr per IP). Sufficient for low-traffic markdown reads. No PAT needed — all repos are public.
+- **Error handling**: GitHub API failures surface as "I couldn't fetch that right now" — no technical details. Sentry breadcrumb on GitHub API errors.
+- **Rate limiting**: GitHub tool calls count against the existing per-session message rate limit.
+
 **Auth**: Anonymous visitors only. No sign-in.
 
 ## Bot Protection & Rate Limiting
@@ -205,6 +227,9 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] Sliding window rate limit (~50 msg/hr per session+IP)
 - [ ] API spend caps on provider dashboards
 - [ ] Sentry breadcrumbs for AI provider fallback events
+- [ ] GitHub repo browsing tools (`listRepoMarkdownFiles`, `readRepoMarkdownFile`)
+- [ ] Server-side repo allowlist (bio, beach-league, giftwell)
+- [ ] GitHub API integration (unauthenticated, public repos)
 
 ### Phase 4: Polish & Ship
 
@@ -225,4 +250,4 @@ Vercel Analytics (built-in, privacy-friendly).
 
 - **Custom domain**: TBD before Phase 4
 - **Beach League + GiftWell live URLs**: Needed for Phase 2 app cards
-- **Suggested question chips**: Current examples ("What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League") — finalize during Phase 2
+- **Suggested question chips**: Current examples ("What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League", "How is this site built?") — finalize during Phase 2
