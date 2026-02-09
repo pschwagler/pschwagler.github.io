@@ -71,7 +71,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-dvh">
       {/* Portfolio panel */}
       <main
         className={`flex-1 overflow-y-auto transition-all duration-300 ${
