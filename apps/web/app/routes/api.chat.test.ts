@@ -16,6 +16,9 @@ vi.mock("ai", () => ({
   streamText: vi.fn().mockReturnValue({
     toUIMessageStream: () => mockStream(),
   }),
+  createUIMessageStreamResponse: vi
+    .fn()
+    .mockImplementation(() => new Response("ok", { status: 200 })),
 }));
 vi.mock("@ai-sdk/google", () => ({
   google: vi.fn().mockReturnValue("mock-google-model"),

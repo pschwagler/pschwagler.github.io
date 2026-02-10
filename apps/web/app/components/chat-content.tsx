@@ -17,6 +17,7 @@ export interface ChatContentProps {
   status: ChatStatus;
   error: Error | undefined;
   clearError: () => void;
+  tokenReady: boolean;
 }
 
 export function ChatContent({
@@ -25,11 +26,13 @@ export function ChatContent({
   status,
   error,
   clearError,
+  tokenReady,
 }: ChatContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isStreaming = status === "streaming" || status === "submitted";
+  const canSend = tokenReady && !isStreaming;
   const hasMessages = messages.length > 0;
 
   // Auto-scroll to bottom when new messages arrive
@@ -44,7 +47,7 @@ export function ChatContent({
     const el = textareaRef.current;
     if (!el) return;
     const text = el.value.trim();
-    if (!text || isStreaming) return;
+    if (!text || !canSend) return;
     sendMessage({ text });
     el.value = "";
     el.style.height = "auto";
@@ -78,8 +81,9 @@ export function ChatContent({
                   key={q}
                   type="button"
                   onClick={() => sendMessage({ text: q })}
+                  disabled={!canSend}
                   aria-label={`Ask: ${q}`}
-                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
+                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
                 >
                   {q}
                 </button>
@@ -157,7 +161,7 @@ export function ChatContent({
           aria-label="Chat message"
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
-          disabled={isStreaming}
+          disabled={!canSend}
           className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:placeholder:text-neutral-500 dark:focus-visible:ring-neutral-500"
         />
       </div>

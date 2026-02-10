@@ -1,4 +1,8 @@
-import { convertToModelMessages, streamText } from "ai";
+import {
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  streamText,
+} from "ai";
 import { google } from "@ai-sdk/google";
 import { anthropic } from "@ai-sdk/anthropic";
 import metaRaw from "@content/meta.md?raw";
@@ -126,9 +130,7 @@ function streamWithFallback(
     },
   });
 
-  return new Response(output, {
-    headers: { "Content-Type": "text/event-stream" },
-  });
+  return createUIMessageStreamResponse({ stream: output });
 }
 
 export async function action({ request }: { request: Request }) {

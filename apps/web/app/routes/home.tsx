@@ -1,14 +1,13 @@
 import { useChat } from "@ai-sdk/react";
-import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { useCallback, useMemo, useState } from "react";
 import { toggleTheme } from "~/lib/theme";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { Portfolio } from "~/components/portfolio";
 import { ChatPanel } from "~/components/chat-panel";
 import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
-
-declare const turnstile: { getResponse: () => string | undefined } | undefined;
+import { useTurnstile } from "~/hooks/use-turnstile";
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
   | string
@@ -63,8 +62,8 @@ export function meta() {
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
-  const turnstileTokenRef = useRef<string | undefined>(undefined);
-  const turnstileRef = useRef<TurnstileInstance>(null);
+  const { widgetRef, tokenReady, onSuccess, getToken, reset } =
+    useTurnstile(TURNSTILE_SITE_KEY);
 
   const {
     messages,
@@ -74,29 +73,23 @@ export default function Home() {
     clearError,
   } = useChat({
     onFinish: useCallback(() => {
-      // Reset widget for a fresh token after each exchange
-      turnstileRef.current?.reset();
-    }, []),
+      reset();
+    }, [reset]),
   });
 
   const sendMessage = useCallback(
-    (message: Parameters<typeof rawSendMessage>[0]) => {
-      // Read token directly from Turnstile API (onSuccess callback is unreliable)
-      const token =
-        turnstileTokenRef.current ??
-        (typeof turnstile !== "undefined"
-          ? turnstile.getResponse()
-          : undefined);
+    async (message: Parameters<typeof rawSendMessage>[0]) => {
+      const token = await getToken();
       return rawSendMessage(message, {
         body: { turnstileToken: token },
       });
     },
-    [rawSendMessage]
+    [rawSendMessage, getToken]
   );
 
   const chatProps = useMemo(
-    () => ({ messages, sendMessage, status, error, clearError }),
-    [messages, sendMessage, status, error, clearError]
+    () => ({ messages, sendMessage, status, error, clearError, tokenReady }),
+    [messages, sendMessage, status, error, clearError, tokenReady]
   );
 
   function handleAskAboutApp(appName: string) {
@@ -157,12 +150,10 @@ export default function Home() {
 
       {TURNSTILE_SITE_KEY && (
         <Turnstile
-          ref={turnstileRef}
+          ref={widgetRef}
           siteKey={TURNSTILE_SITE_KEY}
           options={{ size: "invisible" }}
-          onSuccess={(token) => {
-            turnstileTokenRef.current = token;
-          }}
+          onSuccess={onSuccess}
         />
       )}
     </div>
