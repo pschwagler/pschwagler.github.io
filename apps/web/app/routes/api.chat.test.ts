@@ -222,11 +222,13 @@ describe("api.chat heuristics", () => {
   });
 
   it("rejects with 403 when Turnstile verification fails", async () => {
-    vi.spyOn(turnstile, "verifyTurnstileToken").mockResolvedValueOnce(false);
+    vi.spyOn(turnstile, "verifyTurnstileToken").mockResolvedValueOnce({
+      success: false,
+      errorCodes: ["invalid-input-response"],
+    });
     const res = await action({
       request: makeRequest([userMessage("hello")], "10.0.0.20"),
     });
     expect(res.status).toBe(403);
-    expect(await res.text()).toBe("Verification failed");
   });
 });

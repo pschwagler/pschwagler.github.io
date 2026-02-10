@@ -13,11 +13,11 @@ interface TurnstileVerifyResponse {
 export async function verifyTurnstileToken(
   token: string | undefined,
   ip: string
-): Promise<boolean> {
+): Promise<{ success: boolean; errorCodes?: string[]; noToken?: boolean }> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true; // Skip in dev
+  if (!secret) return { success: true }; // Skip in dev
 
-  if (!token) return false;
+  if (!token) return { success: false, noToken: true };
 
   const response = await fetch(VERIFY_URL, {
     method: "POST",
@@ -30,5 +30,8 @@ export async function verifyTurnstileToken(
   });
 
   const data: TurnstileVerifyResponse = await response.json();
-  return data.success;
+  return {
+    success: data.success,
+    errorCodes: data["error-codes"],
+  };
 }

@@ -144,9 +144,19 @@ export async function action({ request }: { request: Request }) {
 
     // --- Turnstile validation (PRD Layer 1) ---
     const clientIp = getClientIp(request);
-    const turnstileValid = await verifyTurnstileToken(turnstileToken, clientIp);
-    if (!turnstileValid) {
-      return new Response("Verification failed", { status: 403 });
+    const turnstileResult = await verifyTurnstileToken(
+      turnstileToken,
+      clientIp
+    );
+    if (!turnstileResult.success) {
+      return new Response(
+        JSON.stringify({
+          error: "Verification failed",
+          noToken: turnstileResult.noToken,
+          errorCodes: turnstileResult.errorCodes,
+        }),
+        { status: 403, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     // --- Heuristics validation ---

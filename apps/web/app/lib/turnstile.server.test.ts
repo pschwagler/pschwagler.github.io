@@ -16,13 +16,14 @@ describe("verifyTurnstileToken", () => {
   it("skips validation when TURNSTILE_SECRET_KEY is not set", async () => {
     delete process.env.TURNSTILE_SECRET_KEY;
     const result = await verifyTurnstileToken(undefined, "1.2.3.4");
-    expect(result).toBe(true);
+    expect(result.success).toBe(true);
   });
 
   it("rejects when token is missing and secret is set", async () => {
     process.env.TURNSTILE_SECRET_KEY = "test-secret";
     const result = await verifyTurnstileToken(undefined, "1.2.3.4");
-    expect(result).toBe(false);
+    expect(result.success).toBe(false);
+    expect(result.noToken).toBe(true);
   });
 
   it("returns true for a valid token", async () => {
@@ -32,7 +33,7 @@ describe("verifyTurnstileToken", () => {
     );
 
     const result = await verifyTurnstileToken("valid-token", "1.2.3.4");
-    expect(result).toBe(true);
+    expect(result.success).toBe(true);
   });
 
   it("returns false for an invalid token", async () => {
@@ -47,7 +48,8 @@ describe("verifyTurnstileToken", () => {
     );
 
     const result = await verifyTurnstileToken("bad-token", "1.2.3.4");
-    expect(result).toBe(false);
+    expect(result.success).toBe(false);
+    expect(result.errorCodes).toEqual(["invalid-input-response"]);
   });
 
   it("sends correct parameters to Cloudflare", async () => {
