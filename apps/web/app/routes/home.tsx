@@ -1,11 +1,16 @@
 import { useChat } from "@ai-sdk/react";
-import { useMemo, useState } from "react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toggleTheme } from "~/lib/theme";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { Portfolio } from "~/components/portfolio";
 import { ChatPanel } from "~/components/chat-panel";
 import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
+  | string
+  | undefined;
 
 export function meta() {
   const title = "Patrick Schwagler";
@@ -56,7 +61,29 @@ export function meta() {
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
-  const { messages, sendMessage, status, error, clearError } = useChat();
+  const turnstileTokenRef = useRef<string | undefined>(undefined);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+
+  const {
+    messages,
+    sendMessage: rawSendMessage,
+    status,
+    error,
+    clearError,
+  } = useChat({
+    onFinish: useCallback(() => {
+      // Reset widget for a fresh token after each exchange
+      turnstileRef.current?.reset();
+    }, []),
+  });
+
+  const sendMessage = useCallback(
+    (message: Parameters<typeof rawSendMessage>[0]) =>
+      rawSendMessage(message, {
+        body: { turnstileToken: turnstileTokenRef.current },
+      }),
+    [rawSendMessage]
+  );
 
   const chatProps = useMemo(
     () => ({ messages, sendMessage, status, error, clearError }),
@@ -118,6 +145,17 @@ export default function Home() {
         onClose={() => setMobileSheetOpen(false)}
         {...chatProps}
       />
+
+      {TURNSTILE_SITE_KEY && (
+        <Turnstile
+          ref={turnstileRef}
+          siteKey={TURNSTILE_SITE_KEY}
+          options={{ size: "invisible" }}
+          onSuccess={(token) => {
+            turnstileTokenRef.current = token;
+          }}
+        />
+      )}
     </div>
   );
 }

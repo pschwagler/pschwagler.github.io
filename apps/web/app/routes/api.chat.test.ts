@@ -1,4 +1,5 @@
 import { action } from "./api.chat";
+import * as turnstile from "~/lib/turnstile.server";
 
 // Mock AI SDK — we only test heuristics, not LLM calls
 function mockStream() {
@@ -157,5 +158,14 @@ describe("api.chat heuristics", () => {
     const res = await action({ request });
     expect(res.status).toBe(400);
     expect(await res.text()).toBe("Invalid request body");
+  });
+
+  it("rejects with 403 when Turnstile verification fails", async () => {
+    vi.spyOn(turnstile, "verifyTurnstileToken").mockResolvedValueOnce(false);
+    const res = await action({
+      request: makeRequest([userMessage("hello")], "10.0.0.20"),
+    });
+    expect(res.status).toBe(403);
+    expect(await res.text()).toBe("Verification failed");
   });
 });

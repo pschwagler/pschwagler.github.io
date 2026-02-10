@@ -10,6 +10,7 @@ import beachLeagueRaw from "@content/projects/beach-league.md?raw";
 import giftwellRaw from "@content/projects/giftwell.md?raw";
 import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
 import { getLastUserMessageText } from "~/lib/messages";
+import { verifyTurnstileToken } from "~/lib/turnstile.server";
 
 // --- Server-side heuristics (PRD Layer 2) ---
 const MIN_MESSAGE_INTERVAL_MS = 2000;
@@ -123,7 +124,7 @@ function streamWithFallback(
 }
 
 export async function action({ request }: { request: Request }) {
-  let body: { messages?: unknown };
+  let body: { messages?: unknown; turnstileToken?: string };
   try {
     body = await request.json();
   } catch {
@@ -131,7 +132,14 @@ export async function action({ request }: { request: Request }) {
   }
 
   try {
-    const { messages } = body;
+    const { messages, turnstileToken } = body;
+
+    // --- Turnstile validation (PRD Layer 1) ---
+    const clientIp = getClientIp(request);
+    const turnstileValid = await verifyTurnstileToken(turnstileToken, clientIp);
+    if (!turnstileValid) {
+      return new Response("Verification failed", { status: 403 });
+    }
 
     // --- Heuristics validation ---
     const lastUserText = getLastUserMessageText(
@@ -152,7 +160,7 @@ export async function action({ request }: { request: Request }) {
       );
     }
 
-    const clientKey = getClientIp(request);
+    const clientKey = clientIp;
     const state = clientState.get(clientKey);
     const now = Date.now();
 
