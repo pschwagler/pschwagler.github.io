@@ -9,7 +9,8 @@
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "embed": "tsx scripts/embed.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.38",
@@ -38,6 +39,7 @@
     "@types/react-dom": "^19.0.0",
     "jsdom": "^28.0.0",
     "tailwindcss": "^4.1.4",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vitest": "^4.0.18"
