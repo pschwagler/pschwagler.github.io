@@ -75,6 +75,14 @@ export function ChatContent({
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {CHAT_PROMPT}
             </p>
+            {!tokenReady && (
+              <p
+                role="status"
+                className="mt-2 animate-pulse text-xs text-neutral-400 dark:text-neutral-500"
+              >
+                Verifying you&apos;re human…
+              </p>
+            )}
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {SUGGESTED_QUESTIONS.map((q) => (
                 <button
