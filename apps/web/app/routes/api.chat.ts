@@ -8,16 +8,18 @@ import skillsRaw from "@content/skills.md?raw";
 import interviewRaw from "@content/interview.md?raw";
 import beachLeagueRaw from "@content/projects/beach-league.md?raw";
 import giftwellRaw from "@content/projects/giftwell.md?raw";
-import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
+import { MAX_MESSAGE_LENGTH, MAX_MESSAGES_PER_HOUR } from "~/lib/constants";
 import { getLastUserMessageText } from "~/lib/messages";
 import { verifyTurnstileToken } from "~/lib/turnstile.server";
 
-// --- Server-side heuristics (PRD Layer 2) ---
+// --- Server-side heuristics (PRD Layers 2 & 3) ---
 const MIN_MESSAGE_INTERVAL_MS = 2000;
+const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 interface ClientState {
   lastTimestamp: number;
   lastMessage: string;
+  timestamps: number[];
 }
 
 const clientState = new Map<string, ClientState>();
@@ -27,7 +29,7 @@ const cleanupInterval = setInterval(
   () => {
     const now = Date.now();
     for (const [key, state] of clientState) {
-      if (now - state.lastTimestamp > 60 * 60 * 1000) {
+      if (now - state.lastTimestamp > WINDOW_MS) {
         clientState.delete(key);
       }
     }
@@ -173,11 +175,24 @@ export async function action({ request }: { request: Request }) {
       if (lastUserText.trim() === state.lastMessage) {
         return new Response("Duplicate message", { status: 429 });
       }
+
+      // --- Sliding window rate limit (PRD Layer 3) ---
+      const recentTimestamps = state.timestamps.filter(
+        (t) => now - t < WINDOW_MS
+      );
+      if (recentTimestamps.length >= MAX_MESSAGES_PER_HOUR) {
+        return new Response("Rate limit exceeded — try again later", {
+          status: 429,
+        });
+      }
     }
 
+    const prevTimestamps =
+      state?.timestamps.filter((t) => now - t < WINDOW_MS) ?? [];
     clientState.set(clientKey, {
       lastTimestamp: now,
       lastMessage: lastUserText.trim(),
+      timestamps: [...prevTimestamps, now],
     });
 
     // --- LLM call with fallback ---

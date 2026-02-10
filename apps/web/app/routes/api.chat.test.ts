@@ -160,6 +160,63 @@ describe("api.chat heuristics", () => {
     expect(await res.text()).toBe("Invalid request body");
   });
 
+  it("rejects when sliding window rate limit exceeded", async () => {
+    const ip = "10.0.0.30";
+    // Send 50 messages (at the limit)
+    for (let i = 0; i < 50; i++) {
+      vi.advanceTimersByTime(2500); // respect 2s cooldown
+      const res = await action({
+        request: makeRequest([userMessage(`msg ${i}`)], ip),
+      });
+      expect(res.status).toBe(200);
+    }
+
+    // 51st should be rejected
+    vi.advanceTimersByTime(2500);
+    const res = await action({
+      request: makeRequest([userMessage("one too many")], ip),
+    });
+    expect(res.status).toBe(429);
+    expect(await res.text()).toContain("Rate limit exceeded");
+  });
+
+  it("allows messages again after sliding window expires", async () => {
+    const ip = "10.0.0.31";
+    // Send 50 messages
+    for (let i = 0; i < 50; i++) {
+      vi.advanceTimersByTime(2500);
+      await action({
+        request: makeRequest([userMessage(`msg ${i}`)], ip),
+      });
+    }
+
+    // Advance past 1h window so oldest messages expire
+    vi.advanceTimersByTime(60 * 60 * 1000);
+    const res = await action({
+      request: makeRequest([userMessage("after window")], ip),
+    });
+    expect(res.status).toBe(200);
+  });
+
+  it("sliding window does not affect different IPs", async () => {
+    const ip1 = "10.0.0.32";
+    const ip2 = "10.0.0.33";
+    // Exhaust ip1's rate limit
+    for (let i = 0; i < 50; i++) {
+      vi.advanceTimersByTime(2500);
+      await action({
+        request: makeRequest([userMessage(`msg ${i}`)], ip1),
+      });
+    }
+
+    // ip2 should still work
+    vi.advanceTimersByTime(2500);
+    const res = await action({
+      request: makeRequest([userMessage("hello from ip2")], ip2),
+    });
+    expect(res.status).toBe(200);
+  });
+
   it("rejects with 403 when Turnstile verification fails", async () => {
     vi.spyOn(turnstile, "verifyTurnstileToken").mockResolvedValueOnce(false);
     const res = await action({
