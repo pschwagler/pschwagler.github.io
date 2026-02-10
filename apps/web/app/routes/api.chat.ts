@@ -11,6 +11,7 @@ import giftwellRaw from "@content/projects/giftwell.md?raw";
 import { MAX_MESSAGE_LENGTH, MAX_MESSAGES_PER_HOUR } from "~/lib/constants";
 import { getLastUserMessageText } from "~/lib/messages";
 import { verifyTurnstileToken } from "~/lib/turnstile.server";
+import { retrieveRelevantChunks } from "~/lib/retrieval.server";
 
 // --- Server-side heuristics (PRD Layers 2 & 3) ---
 const MIN_MESSAGE_INTERVAL_MS = 2000;
@@ -43,9 +44,13 @@ function getClientIp(request: Request): string {
   return forwarded?.split(",")[0]?.trim() ?? "unknown";
 }
 
-const SYSTEM_PROMPT = [
+const BASE_SYSTEM_PROMPT = [
   "You are an AI assistant on Patrick Schwagler's personal portfolio website. Your role is to answer questions about Patrick's professional experience, skills, and projects.",
   metaRaw,
+].join("\n\n");
+
+// Inline content fallback when RAG is unavailable (no Supabase, embedding errors, etc.)
+const INLINE_CONTENT = [
   "## Context",
   bioRaw,
   experienceRaw,
@@ -62,11 +67,12 @@ const SYSTEM_PROMPT = [
  * Once data has started flowing, errors are surfaced to the client.
  */
 function streamWithFallback(
+  systemPrompt: string,
   modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>
 ): Response {
   const primary = streamText({
     model: google("gemini-2.5-flash"),
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     messages: modelMessages,
   });
 
@@ -94,7 +100,7 @@ function streamWithFallback(
           try {
             const fallback = streamText({
               model: anthropic("claude-sonnet-4-5-20250929"),
-              system: SYSTEM_PROMPT,
+              system: systemPrompt,
               messages: modelMessages,
             });
             const fallbackStream = fallback.toUIMessageStream();
@@ -195,12 +201,27 @@ export async function action({ request }: { request: Request }) {
       timestamps: [...prevTimestamps, now],
     });
 
+    // --- RAG retrieval (fall back to inline content on error) ---
+    let context: string;
+    try {
+      const chunks = await retrieveRelevantChunks(lastUserText);
+      context =
+        chunks.length > 0
+          ? "## Retrieved Context\n\n" +
+            chunks.map((c) => c.content).join("\n\n")
+          : INLINE_CONTENT;
+    } catch {
+      context = INLINE_CONTENT;
+    }
+
+    const systemPrompt = BASE_SYSTEM_PROMPT + "\n\n" + context;
+
     // --- LLM call with fallback ---
     const modelMessages = await convertToModelMessages(
       messages as Parameters<typeof convertToModelMessages>[0]
     );
 
-    return streamWithFallback(modelMessages);
+    return streamWithFallback(systemPrompt, modelMessages);
   } catch {
     return new Response("Something went wrong — try again", { status: 500 });
   }

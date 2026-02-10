@@ -23,6 +23,10 @@ vi.mock("@ai-sdk/google", () => ({
 vi.mock("@ai-sdk/anthropic", () => ({
   anthropic: vi.fn().mockReturnValue("mock-anthropic-model"),
 }));
+// RAG retrieval — falls back to inline content in tests
+vi.mock("~/lib/retrieval.server", () => ({
+  retrieveRelevantChunks: vi.fn().mockRejectedValue(new Error("no supabase")),
+}));
 
 function makeRequest(
   messages: Array<{
