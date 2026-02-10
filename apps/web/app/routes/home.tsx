@@ -8,6 +8,8 @@ import { ChatPanel } from "~/components/chat-panel";
 import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
 
+declare const turnstile: { getResponse: () => string | undefined } | undefined;
+
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
   | string
   | undefined;
@@ -78,10 +80,17 @@ export default function Home() {
   });
 
   const sendMessage = useCallback(
-    (message: Parameters<typeof rawSendMessage>[0]) =>
-      rawSendMessage(message, {
-        body: { turnstileToken: turnstileTokenRef.current },
-      }),
+    (message: Parameters<typeof rawSendMessage>[0]) => {
+      // Read token directly from Turnstile API (onSuccess callback is unreliable)
+      const token =
+        turnstileTokenRef.current ??
+        (typeof turnstile !== "undefined"
+          ? turnstile.getResponse()
+          : undefined);
+      return rawSendMessage(message, {
+        body: { turnstileToken: token },
+      });
+    },
     [rawSendMessage]
   );
 
