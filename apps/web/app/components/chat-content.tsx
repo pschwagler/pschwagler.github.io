@@ -1,7 +1,8 @@
 import type { UIMessage } from "ai";
 import type { ChatStatus } from "ai";
-import { useEffect, useRef, type KeyboardEvent } from "react";
-import Markdown from "react-markdown";
+import { lazy, Suspense, useEffect, useRef, type KeyboardEvent } from "react";
+
+const Markdown = lazy(() => import("react-markdown"));
 import {
   CHAT_PLACEHOLDER,
   CHAT_PROMPT,
@@ -105,7 +106,11 @@ export function ChatContent({
                     </p>
                   ) : (
                     <div className="prose prose-sm prose-neutral dark:prose-invert max-w-[85%] prose-p:leading-relaxed prose-pre:bg-neutral-100 prose-pre:dark:bg-neutral-800">
-                      <Markdown>{text}</Markdown>
+                      <Suspense
+                        fallback={<p className="whitespace-pre-wrap">{text}</p>}
+                      >
+                        <Markdown>{text}</Markdown>
+                      </Suspense>
                     </div>
                   )}
                 </div>
