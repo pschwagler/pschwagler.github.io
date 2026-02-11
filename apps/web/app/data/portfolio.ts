@@ -68,12 +68,21 @@ export interface SkillGroup {
 }
 
 export const ADJECTIVES = [
-  "Builder",
   "Engineer",
-  "Leader",
-  "Manager",
-  "Mentor",
+  "Builder",
   "Creator",
+  "AI/ML Deployments",
+  "Leader",
+  "Technologist",
+  "Generalist",
+  "Lifelong Learner",
+  "Problem Solver",
+  "Manager",
+  "Full-Stack Dev",
+  "Systems Thinker",
+  "Mentor",
+  "Product Thinker",
+  "Prototyper",
 ] as const;
 
 export const SKILL_GROUPS: SkillGroup[] = [

@@ -24,15 +24,28 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 function RotatingAdjective() {
-  const current = useRotatingText(ADJECTIVES);
+  const { current, previous } = useRotatingText(ADJECTIVES);
 
   return (
     <span
-      key={current}
-      className="inline-block animate-fade-in"
+      className="relative inline-block h-[1.5em] overflow-hidden text-2xl font-semibold text-neutral-900 dark:text-neutral-100"
       aria-live="polite"
     >
-      {current}
+      {previous !== null && (
+        <span
+          key={`out-${previous}`}
+          className="absolute inset-0 animate-slide-out-left"
+          aria-hidden="true"
+        >
+          {previous}
+        </span>
+      )}
+      <span
+        key={`in-${current}`}
+        className="inline-block animate-slide-in-right"
+      >
+        {current}
+      </span>
     </span>
   );
 }
@@ -40,13 +53,17 @@ function RotatingAdjective() {
 function IntroSection() {
   return (
     <section className="space-y-4">
-      <h1 className="text-4xl font-bold tracking-tight">Patrick Schwagler</h1>
-      <p className="text-lg text-neutral-600 dark:text-neutral-400">
-        Forward Deployed Software Engineer
-      </p>
-      <p className="text-base text-neutral-500 dark:text-neutral-400">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight">
+            Patrick Schwagler
+          </h1>
+          <p className="mt-1 text-lg text-neutral-600 dark:text-neutral-400">
+            Forward Deployed Software Engineer
+          </p>
+        </div>
         <RotatingAdjective />
-      </p>
+      </div>
       <div className="flex gap-3">
         {SOCIAL_LINKS.map((link) => {
           const Icon = SOCIAL_ICONS[link.platform];

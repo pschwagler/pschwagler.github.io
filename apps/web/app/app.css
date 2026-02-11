@@ -14,3 +14,33 @@
 @utility animate-fade-in {
   animation: fade-in 0.3s ease-in;
 }
+
+@keyframes slide-in-right {
+  from {
+    translate: 100% 0;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-left {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: -100% 0;
+    opacity: 0;
+  }
+}
+
+@utility animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+@utility animate-slide-out-left {
+  animation: slide-out-left 0.4s ease-out forwards;
+}

@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useRotatingText(items: readonly string[], intervalMs = 3000) {
   const [index, setIndex] = useState(0);
+  const prevRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (items.length <= 1) return;
     const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % items.length);
+      setIndex((prev) => {
+        prevRef.current = items[prev];
+        return (prev + 1) % items.length;
+      });
     }, intervalMs);
     return () => clearInterval(id);
-  }, [items.length, intervalMs]);
+  }, [items, intervalMs]);
 
-  return items[index];
+  return { current: items[index], previous: prevRef.current };
 }
