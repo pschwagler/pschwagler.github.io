@@ -13,25 +13,36 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
   | string
   | undefined;
 
+const SITE_URL = "https://patrick-schwagler.vercel.app";
+
 export function meta() {
   const title = "Patrick Schwagler";
   const description =
     "Forward Deployed Engineer, Engineering Manager, and AI Engineer. Explore my work at C3.ai, side projects, and tech stack.";
+  const ogImage = `${SITE_URL}/og.png`;
 
   return [
     { title },
     { name: "description", content: description },
 
+    // Canonical
+    { tagName: "link", rel: "canonical", href: SITE_URL },
+
     // Open Graph
     { property: "og:type", content: "website" },
+    { property: "og:url", content: SITE_URL },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:site_name", content: title },
+    { property: "og:image", content: ogImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
 
     // Twitter Card
-    { name: "twitter:card", content: "summary" },
+    { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
+    { name: "twitter:image", content: ogImage },
 
     // JSON-LD structured data
     {
@@ -41,7 +52,7 @@ export function meta() {
         name: "Patrick Schwagler",
         jobTitle: "Engineering Manager",
         description,
-        url: "https://github.com/pschwagler",
+        url: SITE_URL,
         sameAs: [
           "https://github.com/pschwagler",
           "https://linkedin.com/in/pschwagler",
