@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { GitHubIcon, LinkedInIcon } from "~/components/icons";
 import {
+  ADJECTIVES,
   APPS,
   EXPERIENCE,
   SKILL_GROUPS,
   SOCIAL_LINKS,
   type SocialPlatform,
 } from "~/data/portfolio";
+import { useRotatingText } from "~/hooks/use-rotating-text";
 
 const SOCIAL_ICONS: Record<SocialPlatform, React.FC<{ className?: string }>> = {
   github: GitHubIcon,
@@ -21,12 +23,29 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
+function RotatingAdjective() {
+  const current = useRotatingText(ADJECTIVES);
+
+  return (
+    <span
+      key={current}
+      className="inline-block animate-fade-in"
+      aria-live="polite"
+    >
+      {current}
+    </span>
+  );
+}
+
 function IntroSection() {
   return (
     <section className="space-y-4">
       <h1 className="text-4xl font-bold tracking-tight">Patrick Schwagler</h1>
       <p className="text-lg text-neutral-600 dark:text-neutral-400">
-        Builder. Engineer. Leader.
+        Forward Deployed Software Engineer
+      </p>
+      <p className="text-base text-neutral-500 dark:text-neutral-400">
+        <RotatingAdjective />
       </p>
       <div className="flex gap-3">
         {SOCIAL_LINKS.map((link) => {
@@ -74,9 +93,12 @@ function AppsSection({
                 aria-expanded={isExpanded}
                 aria-label={`${isExpanded ? "Collapse" : "Expand"} ${app.name}`}
               >
-                <span className="text-xl" aria-hidden="true">
-                  {app.icon}
-                </span>
+                <img
+                  src={app.iconSrc}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-6 w-6 shrink-0 rounded"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium">{app.name}</p>
                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -113,6 +135,15 @@ function AppsSection({
                         className="rounded-sm text-sm font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-100 dark:decoration-neutral-600 dark:hover:decoration-neutral-100 dark:focus-visible:ring-neutral-500"
                       >
                         Visit {app.name} →
+                      </a>
+                      <a
+                        href={app.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
+                        aria-label={`${app.name} on GitHub`}
+                      >
+                        <GitHubIcon className="h-4 w-4" />
                       </a>
                       {onAskAboutApp && (
                         <button

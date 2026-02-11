@@ -13,9 +13,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export interface AppItem {
   name: string;
   description: string;
-  icon: string;
+  iconSrc: string;
   techStack: string[];
   url: string;
+  githubUrl: string;
 }
 
 export interface ExperienceItem {
@@ -27,17 +28,19 @@ export interface ExperienceItem {
 export const APPS: AppItem[] = [
   {
     name: "Beach League",
-    description: "Beach volleyball league management",
-    icon: "🏐",
+    description: "Beach volleyball league management and registration",
+    iconSrc: "/images/beach-league.ico",
     techStack: ["React", "TypeScript", "Node.js", "PostgreSQL"],
-    url: "https://beachleague.app",
+    url: "https://beachleaguevb.com",
+    githubUrl: "https://github.com/pschwagler/beach-kings",
   },
   {
     name: "GiftWell",
-    description: "Thoughtful gift recommendations",
-    icon: "🎁",
+    description: "Subscription gifting platform",
+    iconSrc: "/images/giftwell.png",
     techStack: ["React", "TypeScript", "AI/ML", "Vercel"],
-    url: "https://giftwell.app",
+    url: "https://giftwell.shop",
+    githubUrl: "https://github.com/pschwagler/gsub",
   },
 ];
 
@@ -63,6 +66,15 @@ export interface SkillGroup {
   category: string;
   items: string[];
 }
+
+export const ADJECTIVES = [
+  "Builder",
+  "Engineer",
+  "Leader",
+  "Manager",
+  "Mentor",
+  "Creator",
+] as const;
 
 export const SKILL_GROUPS: SkillGroup[] = [
   {
