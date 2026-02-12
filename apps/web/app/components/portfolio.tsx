@@ -84,10 +84,10 @@ function IntroSection({ onContact }: { onContact?: () => void }) {
           <button
             type="button"
             onClick={onContact}
-            className="rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
-            aria-label="Get in touch"
+            className="inline-flex items-center gap-1.5 rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
           >
-            <MailIcon />
+            <MailIcon className="h-4 w-4" />
+            <span className="text-sm font-medium">Get in touch</span>
           </button>
         )}
       </div>
