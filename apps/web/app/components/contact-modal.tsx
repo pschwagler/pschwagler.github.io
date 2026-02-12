@@ -149,7 +149,7 @@ export function ContactModal({
                 disabled={status === "submitting"}
                 maxLength={MAX_CONTACT_MESSAGE_LENGTH}
                 rows={4}
-                placeholder="What would you like to discuss?"
+                placeholder="Tell Patrick about the role or project..."
                 className="w-full resize-none rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500 dark:focus:ring-neutral-500"
               />
               <p className="mt-1 text-right text-xs text-neutral-400 dark:text-neutral-500">
