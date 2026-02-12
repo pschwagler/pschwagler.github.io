@@ -100,9 +100,27 @@ export default function Home() {
     [rawSendMessage, getToken]
   );
 
+  const handleContact = useCallback(() => setContactOpen(true), []);
+
   const chatProps = useMemo(
-    () => ({ messages, sendMessage, status, error, clearError, tokenReady }),
-    [messages, sendMessage, status, error, clearError, tokenReady]
+    () => ({
+      messages,
+      sendMessage,
+      status,
+      error,
+      clearError,
+      tokenReady,
+      onContact: handleContact,
+    }),
+    [
+      messages,
+      sendMessage,
+      status,
+      error,
+      clearError,
+      tokenReady,
+      handleContact,
+    ]
   );
 
   function handleAskAboutApp(appName: string) {

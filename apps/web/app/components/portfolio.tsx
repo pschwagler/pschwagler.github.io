@@ -64,7 +64,7 @@ function IntroSection({ onContact }: { onContact?: () => void }) {
         </div>
         <RotatingAdjective />
       </div>
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         {SOCIAL_LINKS.map((link) => {
           const Icon = SOCIAL_ICONS[link.platform];
           return (
@@ -84,10 +84,10 @@ function IntroSection({ onContact }: { onContact?: () => void }) {
           <button
             type="button"
             onClick={onContact}
-            className="inline-flex items-center gap-1.5 rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
+            className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-neutral-300 px-3.5 py-1 text-sm font-medium text-neutral-700 hover:border-neutral-400 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-100 dark:focus-visible:ring-neutral-500"
           >
             <MailIcon className="h-4 w-4" />
-            <span className="text-sm font-medium">Get in touch</span>
+            Get in touch
           </button>
         )}
       </div>

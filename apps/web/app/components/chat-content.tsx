@@ -10,6 +10,9 @@ import {
 } from "~/data/chat";
 import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
 import { getTextContent } from "~/lib/messages";
+import { MailIcon } from "~/components/icons";
+
+const CONTACT_MARKER = "[contact-form]";
 
 export interface ChatContentProps {
   messages: UIMessage[];
@@ -18,6 +21,7 @@ export interface ChatContentProps {
   error: Error | undefined;
   clearError: () => void;
   tokenReady: boolean;
+  onContact?: () => void;
 }
 
 export function ChatContent({
@@ -27,6 +31,7 @@ export function ChatContent({
   error,
   clearError,
   tokenReady,
+  onContact,
 }: ChatContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -75,28 +80,30 @@ export function ChatContent({
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {CHAT_PROMPT}
             </p>
-            {!tokenReady && (
-              <p
+            {!tokenReady ? (
+              <div
                 role="status"
-                className="mt-2 animate-pulse text-xs text-neutral-400 dark:text-neutral-500"
+                className="mt-4 flex items-center gap-2 text-sm text-neutral-400 dark:text-neutral-500"
               >
+                <span className="h-2 w-2 animate-pulse rounded-full bg-neutral-300 dark:bg-neutral-600" />
                 Verifying you&apos;re human…
-              </p>
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {SUGGESTED_QUESTIONS.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => sendMessage({ text: q })}
+                    disabled={!canSend}
+                    aria-label={`Ask: ${q}`}
+                    className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             )}
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {SUGGESTED_QUESTIONS.map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => sendMessage({ text: q })}
-                  disabled={!canSend}
-                  aria-label={`Ask: ${q}`}
-                  className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
           </div>
         )}
 
@@ -117,12 +124,30 @@ export function ChatContent({
                       {text}
                     </p>
                   ) : (
-                    <div className="prose prose-sm prose-neutral dark:prose-invert max-w-[85%] prose-p:leading-relaxed prose-pre:bg-neutral-100 prose-pre:dark:bg-neutral-800">
-                      <Suspense
-                        fallback={<p className="whitespace-pre-wrap">{text}</p>}
-                      >
-                        <Markdown>{text}</Markdown>
-                      </Suspense>
+                    <div className="max-w-[85%]">
+                      <div className="prose prose-sm prose-neutral dark:prose-invert prose-p:leading-relaxed prose-pre:bg-neutral-100 prose-pre:dark:bg-neutral-800">
+                        <Suspense
+                          fallback={
+                            <p className="whitespace-pre-wrap">
+                              {text.replace(CONTACT_MARKER, "").trim()}
+                            </p>
+                          }
+                        >
+                          <Markdown>
+                            {text.replace(CONTACT_MARKER, "").trim()}
+                          </Markdown>
+                        </Suspense>
+                      </div>
+                      {text.includes(CONTACT_MARKER) && onContact && (
+                        <button
+                          type="button"
+                          onClick={onContact}
+                          className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:focus-visible:ring-neutral-500"
+                        >
+                          <MailIcon className="h-3.5 w-3.5" />
+                          Get in touch
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
