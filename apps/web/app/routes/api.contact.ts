@@ -34,7 +34,14 @@ function getClientIp(request: Request): string {
 }
 
 export async function action({ request }: { request: Request }) {
-  let body: { email?: unknown; message?: unknown; turnstileToken?: string };
+  let body: {
+    email?: unknown;
+    message?: unknown;
+    name?: unknown;
+    company?: unknown;
+    jobTitle?: unknown;
+    turnstileToken?: string;
+  };
   try {
     body = await request.json();
   } catch {
@@ -43,6 +50,16 @@ export async function action({ request }: { request: Request }) {
 
   try {
     const { email, message, turnstileToken } = body;
+    const name =
+      typeof body.name === "string" ? body.name.trim() || undefined : undefined;
+    const company =
+      typeof body.company === "string"
+        ? body.company.trim() || undefined
+        : undefined;
+    const jobTitle =
+      typeof body.jobTitle === "string"
+        ? body.jobTitle.trim() || undefined
+        : undefined;
 
     // --- Validate fields ---
     if (typeof email !== "string" || !EMAIL_RE.test(email)) {
@@ -97,9 +114,14 @@ export async function action({ request }: { request: Request }) {
 
     // --- Store in Supabase ---
     const supabase = getSupabase();
-    const { error: dbError } = await supabase
-      .from("contact_messages")
-      .insert({ email, message: message.trim(), ip_address: clientIp });
+    const { error: dbError } = await supabase.from("contact_messages").insert({
+      email,
+      message: message.trim(),
+      ip_address: clientIp,
+      name,
+      company,
+      job_title: jobTitle,
+    });
 
     if (dbError) {
       console.error("Failed to store contact message:", dbError);
@@ -110,7 +132,13 @@ export async function action({ request }: { request: Request }) {
     }
 
     // --- Send email (fire-and-forget) ---
-    sendContactEmail(email, message.trim()).catch((err) => {
+    sendContactEmail({
+      email,
+      message: message.trim(),
+      name,
+      company,
+      jobTitle,
+    }).catch((err) => {
       console.error("Failed to send contact email:", err);
     });
 

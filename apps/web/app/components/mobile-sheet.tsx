@@ -6,6 +6,7 @@ import { useFocusTrap } from "~/hooks/use-focus-trap";
 export function MobileSheet({
   open,
   onClose,
+  onContact,
   ...chatProps
 }: {
   open: boolean;
@@ -44,10 +45,10 @@ export function MobileSheet({
         <div className="flex justify-center pt-3 pb-1" aria-hidden="true">
           <div className="h-1 w-8 rounded-full bg-neutral-300 dark:bg-neutral-600" />
         </div>
-        <ChatHeader onClose={onClose} />
+        <ChatHeader onClose={onClose} onContact={onContact} />
         {/* Content */}
         <div className="flex flex-1 flex-col py-8">
-          <ChatContent {...chatProps} />
+          <ChatContent onContact={onContact} {...chatProps} />
         </div>
       </div>
     </div>

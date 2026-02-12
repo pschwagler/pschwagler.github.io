@@ -160,6 +160,26 @@ describe("api.contact", () => {
       email: "test@example.com",
       message: "Hello!",
       ip_address: "10.0.0.20",
+      name: undefined,
+      company: undefined,
+      job_title: undefined,
+    });
+  });
+
+  it("inserts optional fields into Supabase", async () => {
+    await action({
+      request: makeRequest(
+        validBody({ name: "Jane", company: "Acme", jobTitle: "Eng Manager" }),
+        "10.0.0.22"
+      ),
+    });
+    expect(mockInsert).toHaveBeenCalledWith({
+      email: "test@example.com",
+      message: "Hello!",
+      ip_address: "10.0.0.22",
+      name: "Jane",
+      company: "Acme",
+      job_title: "Eng Manager",
     });
   });
 
@@ -179,10 +199,29 @@ describe("api.contact", () => {
     await action({
       request: makeRequest(validBody(), "10.0.0.30"),
     });
-    expect(resend.sendContactEmail).toHaveBeenCalledWith(
-      "test@example.com",
-      "Hello!"
-    );
+    expect(resend.sendContactEmail).toHaveBeenCalledWith({
+      email: "test@example.com",
+      message: "Hello!",
+      name: undefined,
+      company: undefined,
+      jobTitle: undefined,
+    });
+  });
+
+  it("passes optional fields to sendContactEmail", async () => {
+    await action({
+      request: makeRequest(
+        validBody({ name: "Jane", company: "Acme", jobTitle: "Eng Manager" }),
+        "10.0.0.32"
+      ),
+    });
+    expect(resend.sendContactEmail).toHaveBeenCalledWith({
+      email: "test@example.com",
+      message: "Hello!",
+      name: "Jane",
+      company: "Acme",
+      jobTitle: "Eng Manager",
+    });
   });
 
   it("still succeeds if sendContactEmail rejects", async () => {

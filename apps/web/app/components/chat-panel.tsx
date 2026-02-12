@@ -6,6 +6,7 @@ const PANEL_WIDTH_CLASS = "w-[380px]";
 export function ChatPanel({
   open,
   onClose,
+  onContact,
   ...chatProps
 }: {
   open: boolean;
@@ -22,8 +23,8 @@ export function ChatPanel({
       }`}
     >
       <div className={`flex h-full ${PANEL_WIDTH_CLASS} flex-col`}>
-        <ChatHeader onClose={onClose} />
-        <ChatContent {...chatProps} />
+        <ChatHeader onClose={onClose} onContact={onContact} />
+        <ChatContent onContact={onContact} {...chatProps} />
       </div>
     </aside>
   );
