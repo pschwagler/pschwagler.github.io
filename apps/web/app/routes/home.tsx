@@ -5,6 +5,7 @@ import { toggleTheme } from "~/lib/theme";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { Portfolio } from "~/components/portfolio";
 import { ChatPanel } from "~/components/chat-panel";
+import { ContactModal } from "~/components/contact-modal";
 import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
 import { useTurnstile } from "~/hooks/use-turnstile";
@@ -73,6 +74,7 @@ export function meta() {
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(true);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const { widgetRef, tokenReady, onSuccess, getToken, reset } =
     useTurnstile(TURNSTILE_SITE_KEY);
 
@@ -125,7 +127,10 @@ export default function Home() {
           <div className="mb-8 flex justify-end">
             <ThemeToggle onToggle={toggleTheme} />
           </div>
-          <Portfolio onAskAboutApp={handleAskAboutApp} />
+          <Portfolio
+            onAskAboutApp={handleAskAboutApp}
+            onContact={() => setContactOpen(true)}
+          />
         </div>
       </main>
 
@@ -157,6 +162,12 @@ export default function Home() {
         open={mobileSheetOpen}
         onClose={() => setMobileSheetOpen(false)}
         {...chatProps}
+      />
+
+      <ContactModal
+        open={contactOpen}
+        onClose={() => setContactOpen(false)}
+        getToken={getToken}
       />
 
       {TURNSTILE_SITE_KEY && (

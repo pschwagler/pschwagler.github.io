@@ -43,5 +43,8 @@ coverage/
 # Playwright MCP
 .playwright-mcp/
 
+# Supabase CLI
+supabase/.temp/
+
 # Content (stored in Supabase, downloaded at build time)
 content/
