@@ -50,7 +50,7 @@ function RotatingAdjective() {
   );
 }
 
-function IntroSection() {
+function IntroSection({ onContact }: { onContact?: () => void }) {
   return (
     <section className="space-y-4">
       <div className="flex items-start justify-between">
@@ -80,6 +80,16 @@ function IntroSection() {
             </a>
           );
         })}
+        {onContact && (
+          <button
+            type="button"
+            onClick={onContact}
+            className="rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
+            aria-label="Get in touch"
+          >
+            <MailIcon />
+          </button>
+        )}
       </div>
     </section>
   );
@@ -238,26 +248,6 @@ function SkillsSection() {
   );
 }
 
-function ContactSection({ onContact }: { onContact?: () => void }) {
-  if (!onContact) return null;
-  return (
-    <section className="mt-16 space-y-4">
-      <SectionHeading>Contact</SectionHeading>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-        Interested in working together? Have a question? Drop me a message.
-      </p>
-      <button
-        type="button"
-        onClick={onContact}
-        className="inline-flex items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700 dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:ring-neutral-500"
-      >
-        <MailIcon className="h-4 w-4" />
-        Get in touch
-      </button>
-    </section>
-  );
-}
-
 export function Portfolio({
   onAskAboutApp,
   onContact,
@@ -267,11 +257,10 @@ export function Portfolio({
 }) {
   return (
     <>
-      <IntroSection />
+      <IntroSection onContact={onContact} />
       <AppsSection onAskAboutApp={onAskAboutApp} />
       <ExperienceSection />
       <SkillsSection />
-      <ContactSection onContact={onContact} />
     </>
   );
 }

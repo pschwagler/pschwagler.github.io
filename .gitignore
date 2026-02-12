@@ -48,3 +48,4 @@ supabase/.temp/
 
 # Content (stored in Supabase, downloaded at build time)
 content/
+.vercel

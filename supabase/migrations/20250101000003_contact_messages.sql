@@ -6,5 +6,8 @@ create table contact_messages (
   created_at timestamptz not null default now()
 );
 
--- RLS: only service role can insert (via server-side API route)
+-- RLS: anon can insert (public contact form), only service role can read
 alter table contact_messages enable row level security;
+
+create policy "Allow anonymous inserts" on contact_messages
+  for insert with check (true);
