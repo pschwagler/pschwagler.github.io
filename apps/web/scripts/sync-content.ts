@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * Embedding pipeline: content/*.md → chunks → Google text-embedding-004 → Supabase pgvector
+ * Content sync pipeline:
+ *   1. Upload content/*.md → Supabase raw_content table
+ *   2. Chunk + embed → Supabase documents table (RAG)
  *
- * Usage: pnpm embed (from apps/web, with .env configured)
- * Requires: SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE_GENERATIVE_AI_API_KEY
+ * Usage: pnpm sync-content (from apps/web, with .env configured)
+ * Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, GOOGLE_GENERATIVE_AI_API_KEY
  */
 
 import { readFileSync, readdirSync } from "node:fs";
@@ -15,9 +17,9 @@ import { google } from "@ai-sdk/google";
 import { chunkMarkdown } from "../app/lib/chunker.js";
 
 const CONTENT_DIR = join(import.meta.dirname, "../../../content");
-const SKIP_FILES = ["meta.md"]; // AI guidelines, not RAG content
+const SKIP_EMBED = ["meta.md"]; // AI guidelines — stored raw but not embedded
 
-// Load .env if present (no dependency needed)
+// Load .env if present
 try {
   const envPath = join(import.meta.dirname, "../.env");
   const env = readFileSync(envPath, "utf-8");
@@ -39,10 +41,7 @@ function collectMarkdownFiles(dir: string): string[] {
     if (entry.isDirectory()) {
       files.push(...collectMarkdownFiles(fullPath));
     } else if (entry.name.endsWith(".md")) {
-      const relPath = relative(CONTENT_DIR, fullPath);
-      if (!SKIP_FILES.includes(relPath)) {
-        files.push(fullPath);
-      }
+      files.push(fullPath);
     }
   }
   return files;
@@ -50,9 +49,12 @@ function collectMarkdownFiles(dir: string): string[] {
 
 async function main() {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
   if (!url || !key) {
-    console.error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
+    console.error(
+      "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY / SUPABASE_ANON_KEY"
+    );
     process.exit(1);
   }
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
@@ -60,23 +62,48 @@ async function main() {
     process.exit(1);
   }
 
-  // 1. Read + chunk content files
+  const supabase = createClient(url, key);
+
+  // 1. Read all content files
   const files = collectMarkdownFiles(CONTENT_DIR);
-  console.log(
-    `Found ${files.length} markdown files (skipping: ${SKIP_FILES.join(", ")})\n`
+  console.log(`Found ${files.length} markdown files\n`);
+
+  const fileEntries = files.map((file) => ({
+    path: relative(CONTENT_DIR, file),
+    content: readFileSync(file, "utf-8"),
+  }));
+
+  // 2. Upsert into raw_content
+  console.log("Uploading to raw_content...");
+  const { error: upsertError } = await supabase.from("raw_content").upsert(
+    fileEntries.map((f) => ({
+      path: f.path,
+      content: f.content,
+      updated_at: new Date().toISOString(),
+    })),
+    { onConflict: "path" }
   );
 
+  if (upsertError) {
+    console.error("Failed to upsert raw_content:", upsertError.message);
+    process.exit(1);
+  }
+  console.log(`Upserted ${fileEntries.length} files\n`);
+
+  // 3. Chunk files (skip meta.md for embedding)
   const allChunks: {
     content: string;
     metadata: { source: string; chunk: number };
   }[] = [];
 
-  for (const file of files) {
-    const source = relative(CONTENT_DIR, file);
-    const text = readFileSync(file, "utf-8");
-    const chunks = chunkMarkdown(text, source);
+  for (const entry of fileEntries) {
+    if (SKIP_EMBED.includes(entry.path)) {
+      console.log(`  ${entry.path}: skipped (not embedded)`);
+      continue;
+    }
+    const chunks = chunkMarkdown(entry.content, entry.path);
     console.log(
-      `  ${source}: ${chunks.length} chunk${chunks.length === 1 ? "" : "s"}`
+      `  ${entry.path}: ${chunks.length} chunk${chunks.length === 1 ? "" : "s"}`
     );
     allChunks.push(...chunks);
   }
@@ -88,16 +115,18 @@ async function main() {
     return;
   }
 
-  // 2. Embed all chunks in one batch
-  console.log("Embedding chunks with text-embedding-004...");
+  // 4. Embed all chunks
+  console.log("Embedding chunks with gemini-embedding-001...");
   const { embeddings } = await embedMany({
-    model: google.textEmbeddingModel("text-embedding-004"),
+    model: google.textEmbeddingModel("gemini-embedding-001"),
     values: allChunks.map((c) => c.content),
+    providerOptions: {
+      google: { outputDimensionality: 768 },
+    },
   });
   console.log(`Embedded ${embeddings.length} chunks\n`);
 
-  // 3. Clear existing documents
-  const supabase = createClient(url, key);
+  // 5. Clear + insert documents
   console.log("Clearing existing documents...");
   const { error: deleteError } = await supabase
     .from("documents")
@@ -109,7 +138,6 @@ async function main() {
     process.exit(1);
   }
 
-  // 4. Insert new documents
   console.log("Inserting new documents...");
   const { error: insertError } = await supabase.from("documents").insert(
     allChunks.map((chunk, i) => ({
@@ -124,7 +152,9 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\nDone! Inserted ${allChunks.length} document chunks.`);
+  console.log(
+    `\nDone! Synced ${fileEntries.length} files, embedded ${allChunks.length} chunks.`
+  );
 }
 
 main().catch((err) => {

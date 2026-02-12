@@ -42,3 +42,6 @@ coverage/
 
 # Playwright MCP
 .playwright-mcp/
+
+# Content (stored in Supabase, downloaded at build time)
+content/

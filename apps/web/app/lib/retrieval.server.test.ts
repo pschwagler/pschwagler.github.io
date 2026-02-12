@@ -28,12 +28,15 @@ describe("retrieveRelevantChunks", () => {
     mockRpc.mockResolvedValue({ data: [], error: null });
   });
 
-  it("embeds the query with Google text-embedding-004", async () => {
+  it("embeds the query with Google gemini-embedding-001", async () => {
     await retrieveRelevantChunks("What is Patrick's experience?");
 
     expect(mockEmbed).toHaveBeenCalledWith({
       model: "mock-embedding-model",
       value: "What is Patrick's experience?",
+      providerOptions: {
+        google: { outputDimensionality: 768 },
+      },
     });
   });
 

@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build",
+    "build": "tsx scripts/download-content.ts && react-router build",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "embed": "tsx scripts/embed.ts",
+    "sync-content": "tsx scripts/sync-content.ts",
+    "download-content": "tsx scripts/download-content.ts",
     "og": "tsx scripts/og.ts"
   },
   "dependencies": {

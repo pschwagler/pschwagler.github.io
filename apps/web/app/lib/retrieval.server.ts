@@ -12,15 +12,18 @@ export interface DocumentChunk {
 
 /**
  * Embed a query and retrieve the most relevant content chunks from Supabase pgvector.
- * Uses Google text-embedding-004 (768 dimensions) for embedding.
+ * Uses Google gemini-embedding-001 (768 dimensions) for embedding.
  */
 export async function retrieveRelevantChunks(
   query: string,
   topK: number = MATCH_COUNT
 ): Promise<DocumentChunk[]> {
   const { embedding } = await embed({
-    model: google.textEmbeddingModel("text-embedding-004"),
+    model: google.textEmbeddingModel("gemini-embedding-001"),
     value: query,
+    providerOptions: {
+      google: { outputDimensionality: 768 },
+    },
   });
 
   const supabase = getSupabase();
