@@ -87,15 +87,45 @@ export const ADJECTIVES = [
 
 export const SKILL_GROUPS: SkillGroup[] = [
   {
-    category: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "SQL"],
+    category: "Programming & Frameworks",
+    items: [
+      "JavaScript",
+      "TypeScript",
+      "Python",
+      "React",
+      "Next.js",
+      "FastAPI",
+      "Django",
+      "Pandas",
+      "Apache Spark",
+      "Node.js",
+      "pytest",
+      "SQL",
+      "ORM",
+    ],
   },
   {
-    category: "Frameworks & Libraries",
-    items: ["React", "Node.js", "Tailwind CSS", "Vite"],
+    category: "Databases & Cloud",
+    items: [
+      "PostgreSQL",
+      "Cassandra",
+      "Redis",
+      "MongoDB",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Docker",
+    ],
   },
   {
-    category: "Platforms & Tools",
-    items: ["AWS", "Vercel", "Supabase", "Git"],
+    category: "Tools & Other",
+    items: [
+      "AI/ML integrations",
+      "Git",
+      "AI-assisted development",
+      "Figma",
+      "Jira",
+      "Confluence",
+    ],
   },
 ];

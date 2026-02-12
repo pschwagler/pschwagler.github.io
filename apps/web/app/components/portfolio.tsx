@@ -167,10 +167,10 @@ function AppsSection({
                         href={app.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-sm text-neutral-500 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-500"
-                        aria-label={`${app.name} on GitHub`}
+                        className="inline-flex items-center gap-1 rounded-sm text-sm font-medium text-neutral-500 underline decoration-neutral-300 underline-offset-2 hover:text-neutral-900 hover:decoration-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:decoration-neutral-600 dark:hover:text-neutral-100 dark:hover:decoration-neutral-100 dark:focus-visible:ring-neutral-500"
                       >
                         <GitHubIcon className="h-4 w-4" />
+                        Visit repo →
                       </a>
                       {onAskAboutApp && (
                         <button
