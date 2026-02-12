@@ -9,6 +9,8 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
+    "sync-content": "pnpm --filter @bio/web sync-content",
+    "content-versions": "pnpm --filter @bio/web content-versions",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"

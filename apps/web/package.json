@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "sync-content": "tsx scripts/sync-content.ts",
+    "content-versions": "tsx scripts/content-versions.ts",
     "download-content": "tsx scripts/download-content.ts",
     "og": "tsx scripts/og.ts"
   },

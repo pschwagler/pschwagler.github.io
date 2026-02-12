@@ -2,13 +2,15 @@
 
 /**
  * Content sync pipeline:
- *   1. Upload content/*.md → Supabase raw_content table
- *   2. Chunk + embed → Supabase documents table (RAG)
+ *   1. Auto-commit content changes to local content/ git repo
+ *   2. Upload content/*.md → Supabase raw_content table
+ *   3. Chunk + embed → Supabase documents table (RAG)
  *
  * Usage: pnpm sync-content (from apps/web, with .env configured)
  * Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, GOOGLE_GENERATIVE_AI_API_KEY
  */
 
+import { execSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createClient } from "@supabase/supabase-js";
@@ -38,13 +40,38 @@ function collectMarkdownFiles(dir: string): string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
+    if (entry.isDirectory() && entry.name !== ".git") {
       files.push(...collectMarkdownFiles(fullPath));
     } else if (entry.name.endsWith(".md")) {
       files.push(fullPath);
     }
   }
   return files;
+}
+
+function git(args: string): string {
+  return execSync(`git ${args}`, { cwd: CONTENT_DIR, encoding: "utf-8" });
+}
+
+function commitContentChanges(): void {
+  // Check for changes
+  const status = git("status --porcelain").trim();
+  if (!status) {
+    console.log("No content changes to commit\n");
+    return;
+  }
+
+  // Show what changed
+  console.log("Content changes:");
+  for (const line of status.split("\n")) {
+    console.log(`  ${line}`);
+  }
+
+  // Commit
+  git("add -A");
+  const timestamp = new Date().toISOString();
+  git(`commit -m "Sync ${timestamp}"`);
+  console.log(`Committed at ${timestamp}\n`);
 }
 
 async function main() {
@@ -68,12 +95,15 @@ async function main() {
   const files = collectMarkdownFiles(CONTENT_DIR);
   console.log(`Found ${files.length} markdown files\n`);
 
+  // 2. Auto-commit content changes
+  commitContentChanges();
+
   const fileEntries = files.map((file) => ({
     path: relative(CONTENT_DIR, file),
     content: readFileSync(file, "utf-8"),
   }));
 
-  // 2. Upsert into raw_content
+  // 3. Upsert into raw_content
   console.log("Uploading to raw_content...");
   const { error: upsertError } = await supabase.from("raw_content").upsert(
     fileEntries.map((f) => ({
@@ -90,7 +120,7 @@ async function main() {
   }
   console.log(`Upserted ${fileEntries.length} files\n`);
 
-  // 3. Chunk files (skip meta.md for embedding)
+  // 4. Chunk files (skip meta.md for embedding)
   const allChunks: {
     content: string;
     metadata: { source: string; chunk: number };
@@ -115,7 +145,7 @@ async function main() {
     return;
   }
 
-  // 4. Embed all chunks
+  // 5. Embed all chunks
   console.log("Embedding chunks with gemini-embedding-001...");
   const { embeddings } = await embedMany({
     model: google.textEmbeddingModel("gemini-embedding-001"),
@@ -126,7 +156,7 @@ async function main() {
   });
   console.log(`Embedded ${embeddings.length} chunks\n`);
 
-  // 5. Clear + insert documents
+  // 6. Clear + insert documents
   console.log("Clearing existing documents...");
   const { error: deleteError } = await supabase
     .from("documents")
