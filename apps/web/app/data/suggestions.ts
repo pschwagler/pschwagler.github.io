@@ -80,9 +80,11 @@ export const SUGGESTION_POOL: string[] = [
   "What are his core engineering principles?",
   "How does he approach code reviews?",
 
-  // AI-assisted development
+  // AI-assisted development / This site
   "What's his take on AI-assisted development?",
-  "How did he build this portfolio site?",
+  "How did Patrick build this site?",
+  "How long did it take to build this site?",
+  "Tell me how this site works",
   "What are ralph loops?",
   "How has his perspective on AI tools changed?",
 

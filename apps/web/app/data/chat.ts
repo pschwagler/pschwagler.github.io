@@ -1,6 +1,6 @@
 export const SUGGESTED_QUESTIONS = [
+  "How did Patrick build this site?",
   "What did Patrick build at C3?",
-  "What's his tech stack?",
   "Tell me about Beach League",
 ];
 
