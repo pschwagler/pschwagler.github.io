@@ -1,7 +1,7 @@
 export const SUGGESTED_QUESTIONS = [
-  "How did Patrick build this site?",
+  "How does this site work?",
   "What did Patrick build at C3?",
-  "Tell me about Beach League",
+  "What's his engineering philosophy?",
 ];
 
 export const CHAT_PLACEHOLDER = "Ask a question...";
