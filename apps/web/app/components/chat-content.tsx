@@ -11,6 +11,7 @@ import {
 import { MAX_MESSAGE_LENGTH } from "~/lib/constants";
 import { getTextContent } from "~/lib/messages";
 import { MailIcon } from "~/components/icons";
+import { SuggestionChip } from "~/components/suggestion-chip";
 
 const CONTACT_MARKER = "[contact-form]";
 
@@ -21,6 +22,7 @@ export interface ChatContentProps {
   error: Error | undefined;
   clearError: () => void;
   tokenReady: boolean;
+  suggestions?: string[];
   onContact?: () => void;
 }
 
@@ -31,6 +33,7 @@ export function ChatContent({
   error,
   clearError,
   tokenReady,
+  suggestions = [],
   onContact,
 }: ChatContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -91,16 +94,12 @@ export function ChatContent({
             ) : (
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 {SUGGESTED_QUESTIONS.map((q) => (
-                  <button
+                  <SuggestionChip
                     key={q}
-                    type="button"
+                    label={q}
                     onClick={() => sendMessage({ text: q })}
                     disabled={!canSend}
-                    aria-label={`Ask: ${q}`}
-                    className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:focus-visible:ring-neutral-500"
-                  >
-                    {q}
-                  </button>
+                  />
                 ))}
               </div>
             )}
@@ -181,6 +180,21 @@ export function ChatContent({
                 </p>
               </div>
             )}
+
+            {!isStreaming &&
+              suggestions.length > 0 &&
+              messages[messages.length - 1]?.role === "assistant" && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {suggestions.map((q) => (
+                    <SuggestionChip
+                      key={q}
+                      label={q}
+                      onClick={() => sendMessage({ text: q })}
+                      disabled={!canSend}
+                    />
+                  ))}
+                </div>
+              )}
           </div>
         )}
       </div>

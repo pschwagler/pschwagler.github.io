@@ -83,6 +83,9 @@ importers:
       resend:
         specifier: ^6.9.2
         version: 6.9.2
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@react-router/dev':
         specifier: ^7.2.0

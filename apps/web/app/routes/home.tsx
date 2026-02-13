@@ -9,6 +9,7 @@ import { ContactModal } from "~/components/contact-modal";
 import { MobileSheet } from "~/components/mobile-sheet";
 import { Fab } from "~/components/fab";
 import { useTurnstile } from "~/hooks/use-turnstile";
+import { useSuggestions } from "~/hooks/use-suggestions";
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
   | string
@@ -77,6 +78,7 @@ export default function Home() {
   const [contactOpen, setContactOpen] = useState(false);
   const { widgetRef, tokenReady, onSuccess, getToken, reset } =
     useTurnstile(TURNSTILE_SITE_KEY);
+  const { suggestions, fetchSuggestions, clearSuggestions } = useSuggestions();
 
   const {
     messages,
@@ -92,12 +94,28 @@ export default function Home() {
 
   const sendMessage = useCallback(
     async (message: Parameters<typeof rawSendMessage>[0]) => {
+      clearSuggestions();
       const token = await getToken();
-      return rawSendMessage(message, {
+      // Fire chat and suggestion requests in parallel
+      const chatPromise = rawSendMessage(message, {
         body: { turnstileToken: token },
       });
+      const text =
+        message == null
+          ? ""
+          : typeof message === "string"
+            ? message
+            : "text" in message
+              ? (message.text ?? "")
+              : "";
+      const simpleMessages = [
+        ...messages.map((m) => ({ role: m.role, parts: m.parts })),
+        { role: "user", parts: [{ type: "text", text }] },
+      ];
+      fetchSuggestions(simpleMessages, token);
+      return chatPromise;
     },
-    [rawSendMessage, getToken]
+    [rawSendMessage, getToken, messages, fetchSuggestions, clearSuggestions]
   );
 
   const handleContact = useCallback(() => setContactOpen(true), []);
@@ -110,6 +128,7 @@ export default function Home() {
       error,
       clearError,
       tokenReady,
+      suggestions,
       onContact: handleContact,
     }),
     [
@@ -119,6 +138,7 @@ export default function Home() {
       error,
       clearError,
       tokenReady,
+      suggestions,
       handleContact,
     ]
   );
