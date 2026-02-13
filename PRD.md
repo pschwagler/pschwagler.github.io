@@ -12,8 +12,7 @@ Single-page portfolio with adaptive split layout — portfolio content left, AI 
 - **AI**: Vercel AI SDK v4 + Gemini 2.5 Flash (primary) + Anthropic Claude (fallback)
 - **Embeddings**: Google gemini-embedding-001
 - **Bot Protection**: Cloudflare Turnstile
-- **Analytics**: Vercel Analytics
-- **Error Monitoring**: Sentry (free tier)
+- **Email**: Resend
 - **Hosting**: Vercel
 - **Testing**: Vitest
 
@@ -72,7 +71,7 @@ Single scrollable page:
   - User messages: right-aligned, no bubble background
   - AI responses: left-aligned, rich markdown
 - **No citations / cross-panel linking**
-- Suggested question chips: 3–4 static starters (e.g., "What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League")
+- Suggested question chips: 3 static starters + dynamic follow-ups after each AI response (see Dynamic Follow-Up Suggestions)
 - Typing indicator: subtle shimmer
 - **Input**: Multiline auto-expanding textarea. Enter to send, Shift+Enter for newline. Max ~500 chars.
 
@@ -96,9 +95,41 @@ content/
 └── meta.md             # Tone, style, boundaries for AI responses
 ```
 
-**Pipeline**: `content/*.md` → chunk → embed via Google text-embedding-004 → Supabase pgvector. Rebuild via manual script (run before deploy when content changes).
+**Pipeline**: `pnpm sync-content` — chunks + embeds via `gemini-embedding-001` (768 dims) → Supabase pgvector. Manual run before deploy when content changes.
 
-**Chunking**: ~500 tokens per chunk, 50-token overlap. Top-5 retrieval per query.
+**Chunking**: 2000 chars (~500 tokens) per chunk. Splits on `##` headers first; oversized sections get paragraph-boundary splits with last-paragraph overlap. Top-10 retrieval per query (similarity threshold 0.3).
+
+### Content Privacy & Versioning
+
+`content/` is a **separate local-only git repo**, gitignored from the main repo. Keeps raw interview answers private from GitHub.
+
+- Every `pnpm sync-content` run auto-commits content changes with an ISO timestamp
+- CLI: `pnpm content-versions` — subcommands: `log` (default), `diff [hash]`, `show <hash>`, `restore <hash>`
+- Supabase `raw_content` table is the deployed source of truth
+
+### Content Sync Pipeline
+
+`pnpm sync-content` — manual 3-phase script:
+
+1. **Auto-commit**: Detects content/ changes, commits to local content/ git repo with timestamp
+2. **Upload**: Upserts all `.md` files → Supabase `raw_content` table (keyed by path)
+3. **Chunk + Embed**: Chunks files → `gemini-embedding-001` embeddings → Supabase `documents` table (clear + reinsert)
+
+`meta.md` is stored in `raw_content` but **not embedded** — used as system prompt base only.
+
+Requires: `SUPABASE_SERVICE_ROLE_KEY` + `GOOGLE_GENERATIVE_AI_API_KEY`.
+
+### Build-Time Content Download
+
+`download-content.ts` runs before `react-router build` (configured in package.json build script).
+
+- Downloads from Supabase `raw_content` → recreates `content/` directory
+- Needed for Vercel CI where `content/` doesn't exist (gitignored)
+- Skips if `content/` already has `.md` files (local dev)
+
+### Inline Content Fallback
+
+All `content/*.md` files are imported via Vite `?raw` imports in the chat route. When Supabase/embeddings are unavailable, content is inlined directly into the system prompt. Graceful degradation — chat works even without RAG.
 
 ## AI Chat Architecture
 
@@ -116,28 +147,6 @@ User sends message
 
 **Provider strategy**: `@ai-sdk/google` with Gemini 2.5 Flash primary. Fall back to `@ai-sdk/anthropic` Claude on error/timeout (10s timeout triggers fallback). Google context caching on system prompt + RAG context to reduce per-request token cost. Fallback is transparent to user — no "switching providers" message.
 
-### GitHub Repo Browsing (Tool Use)
-
-The AI can answer questions about Patrick's public GitHub repos (architecture, ERDs, workflows, tech decisions) via live tool calls to the GitHub API.
-
-**How it works**: Vercel AI SDK `tools` parameter on `streamText()`. The model decides when a question warrants fetching repo content and calls the tool autonomously.
-
-**Tools**:
-
-| Tool                    | Description                        | Returns                          |
-| ----------------------- | ---------------------------------- | -------------------------------- |
-| `listRepoMarkdownFiles` | List `.md` files in a repo         | Array of file paths              |
-| `readRepoMarkdownFile`  | Read a specific `.md` file by path | File content (truncated to 20KB) |
-
-**Constraints**:
-
-- **Repo allowlist** (server-side): Only curated public repos — `bio`, `beach-league`, `giftwell`. Reject any request for a repo not in the list.
-- **Markdown files only**: Tools only expose `.md` files (READMEs, docs, architecture docs, etc.). No source code, no config files.
-- **Truncation**: Files larger than 20KB are truncated with a `[truncated]` marker.
-- **GitHub API auth**: Unauthenticated (60 req/hr per IP). Sufficient for low-traffic markdown reads. No PAT needed — all repos are public.
-- **Error handling**: GitHub API failures surface as "I couldn't fetch that right now" — no technical details. Sentry breadcrumb on GitHub API errors.
-- **Rate limiting**: GitHub tool calls count against the existing per-session message rate limit.
-
 **Auth**: Anonymous visitors only. No sign-in.
 
 ## Bot Protection & Rate Limiting
@@ -152,6 +161,24 @@ The AI can answer questions about Patrick's public GitHub repos (architecture, E
 **Rate limit storage**: Supabase table (simple, already in stack).
 
 **Session tracking**: Cookie-based session ID (set on first visit) + IP.
+
+## Contact Form
+
+Modal triggered from portfolio or via `[contact-form]` marker in AI responses (configured in `meta.md`).
+
+- **Fields**: name (optional), company (optional), jobTitle (optional), email (required), message (required, max 2000 chars)
+- **Dual write**: Supabase `contact_messages` table + Resend email notification (fire-and-forget)
+- **Rate limit**: 3/hour per IP, Turnstile-protected
+- **Hiring-focused**: Fields oriented toward recruiters/hiring managers
+
+## Dynamic Follow-Up Suggestions
+
+`/api/suggestions` endpoint — Gemini 2.5 Flash structured output picks 3 from a 77-question pool.
+
+- **Selection rules**: one deeper on current topic, one pivot to undiscussed topic, one generally interesting
+- **Timing**: Fires after each AI response (parallel with chat stream)
+- **Fallback**: Client-side static chips if API fails
+- **Pool**: Curated questions in `app/data/suggestions.ts`
 
 ## Design
 
@@ -169,24 +196,6 @@ Minimal/clean. White space, typography-focused. References: linear.app, rauno.me
 - **Conversation cap**: No hard cap. Natural conversation length.
 - **Mobile chat history**: Bottom sheet preserves prior messages from same session.
 
-## Analytics
-
-Vercel Analytics (built-in, privacy-friendly).
-
-## Observability & Alerting
-
-**Sentry** (free tier) for error monitoring. No PII captured — all visitors are anonymous with ephemeral sessions.
-
-- **SDK**: `@sentry/react-router` (covers both client React and server-side React Router 7)
-- **What to capture**:
-  - Runtime errors — automatic via Sentry SDK integration
-  - AI provider fallback events — custom breadcrumb when Gemini fails and Anthropic takes over
-  - Both-providers-down errors — `Sentry.captureException()` on the existing catch-all error path
-  - Supabase connection failures — captured automatically as unhandled errors
-- **Alerts**: Email alerts on error spikes (Sentry default alert rules)
-- **Source maps**: Automatic via Sentry's Vercel integration (connects at deploy time)
-- **Privacy**: No user data captured. No session replay. Anonymous visitors only, ephemeral conversations.
-
 ## Phases
 
 ### Phase 1: Foundation
@@ -199,8 +208,6 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] Dark mode toggle + system preference detection
 - [ ] Supabase client (SSR with `@supabase/ssr`)
 - [ ] Deploy skeleton to Vercel
-- [ ] Vercel Analytics
-- [ ] Sentry project setup + SDK integration (client + server)
 
 ### Phase 2: Content
 
@@ -216,20 +223,20 @@ Vercel Analytics (built-in, privacy-friendly).
 - [ ] Add `@ai-sdk/google`, configure Gemini 2.5 Flash primary provider
 - [ ] Configure `@ai-sdk/anthropic` as fallback
 - [ ] Supabase `documents` table (pgvector)
-- [ ] Embedding pipeline: markdown → chunks → Google text-embedding-004 → pgvector
+- [ ] Embedding pipeline: markdown → chunks → gemini-embedding-001 → pgvector
 - [ ] Vercel AI SDK route handler with streaming
 - [ ] Chat UI: message list, auto-expanding textarea, shimmer indicator
-- [ ] Static suggested question chips
+- [ ] Suggested question chips (static initial + dynamic follow-ups)
 - [ ] System prompt + `content/meta.md`
 - [ ] Google context caching for system prompt + RAG context
 - [ ] Cloudflare Turnstile (client widget + server validation)
 - [ ] Server-side heuristics (2s delay, 500 char limit, dedup)
 - [ ] Sliding window rate limit (~50 msg/hr per session+IP)
 - [ ] API spend caps on provider dashboards
-- [ ] Sentry breadcrumbs for AI provider fallback events
-- [ ] GitHub repo browsing tools (`listRepoMarkdownFiles`, `readRepoMarkdownFile`)
-- [ ] Server-side repo allowlist (bio, beach-league, giftwell)
-- [ ] GitHub API integration (unauthenticated, public repos)
+- [ ] Contact form modal + Supabase + Resend integration
+- [ ] Dynamic follow-up suggestions endpoint
+- [ ] Content sync pipeline (`sync-content`, `download-content`, `content-versions`)
+- [ ] Inline content fallback via `?raw` imports
 
 ### Phase 4: Polish & Ship
 
@@ -250,4 +257,3 @@ Vercel Analytics (built-in, privacy-friendly).
 
 - **Custom domain**: TBD before Phase 4
 - **Beach League + GiftWell live URLs**: Needed for Phase 2 app cards
-- **Suggested question chips**: Current examples ("What did Patrick build at C3?", "What's his tech stack?", "Tell me about Beach League", "How is this site built?") — finalize during Phase 2

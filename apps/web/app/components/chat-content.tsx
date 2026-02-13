@@ -49,7 +49,7 @@ export function ChatContent({
       top: scrollRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, suggestions]);
 
   function handleSubmit() {
     const el = textareaRef.current;
