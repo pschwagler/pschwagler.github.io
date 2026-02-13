@@ -10,7 +10,7 @@ Single-page portfolio with adaptive split layout — portfolio content left, AI 
 - **Styling**: Tailwind CSS v4
 - **Backend**: Supabase (DB, pgvector)
 - **AI**: Vercel AI SDK v4 + Gemini 2.5 Flash (primary) + Anthropic Claude (fallback)
-- **Embeddings**: Google text-embedding-004
+- **Embeddings**: Google gemini-embedding-001
 - **Bot Protection**: Cloudflare Turnstile
 - **Analytics**: Vercel Analytics
 - **Error Monitoring**: Sentry (free tier)

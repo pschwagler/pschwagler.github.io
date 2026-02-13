@@ -9,6 +9,8 @@ export const SUGGESTION_POOL: string[] = [
   "What did he study at Princeton?",
   "What was it like playing professional volleyball?",
   "Where did Patrick play volleyball professionally?",
+  "What did he learn from playing professional volleyball?",
+  "What was playing volleyball in Italy like?",
   "What did he do before C3.ai?",
 
   // C3.ai general
@@ -17,6 +19,7 @@ export const SUGGESTION_POOL: string[] = [
   "What industries did he work across at C3?",
   "What cloud platforms has he deployed on?",
   "What was his career progression at C3?",
+  "Why did he leave C3.ai?",
 
   // FDE projects (early career)
   "Tell me about the financial institution project",
@@ -32,7 +35,7 @@ export const SUGGESTION_POOL: string[] = [
   "Tell me about the aluminum cup manufacturer rescue",
   "What was the energy forecasting project for the steel manufacturer?",
   "How did he deliver the steel manufacturer project in 5 weeks?",
-  "What was the evidence package he built for forecasts?",
+  "What was the steel manufacturer evidence package?",
   "Tell me about the utility company API he designed",
   "What was the energy baselining project?",
   "How did he optimize the utility company's infrastructure costs?",
@@ -63,6 +66,9 @@ export const SUGGESTION_POOL: string[] = [
   "What features did GiftWell have?",
   "How was GiftWell's CI/CD pipeline set up?",
 
+  // Riparian / early career
+  "What did he do at Riparian?",
+
   // Skills / Tech stack
   "What's his tech stack?",
   "What languages does he work with?",
@@ -87,11 +93,15 @@ export const SUGGESTION_POOL: string[] = [
   "Tell me how this site works",
   "What are ralph loops?",
   "How has his perspective on AI tools changed?",
+  "How does he use Claude and Cursor day-to-day?",
+  "What tasks does he delegate to AI vs do himself?",
+  "What's the RAG pipeline behind this site?",
 
   // Career arc / What drives him
   "What drives him professionally?",
   "What should I take away from his experience?",
   "What kind of role is he looking for?",
+  "Is he looking for IC or management roles?",
   "What makes him well-suited for the AI era?",
   "How would you describe his career arc?",
 ];

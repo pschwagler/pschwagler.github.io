@@ -74,6 +74,7 @@ function splitOversizedSection(
       : "";
 
   let acc = prefix;
+  let lastPara = "";
   for (const para of paragraphs) {
     if (
       acc.length + para.length + 2 > MAX_CHUNK_SIZE &&
@@ -83,9 +84,14 @@ function splitOversizedSection(
         content: acc.trim(),
         metadata: { source, chunk: chunks.length },
       });
-      acc = prefix;
+      // Overlap: carry last paragraph into next chunk (unless it alone exceeds limit)
+      acc =
+        lastPara && prefix.length + lastPara.length + 2 <= MAX_CHUNK_SIZE
+          ? prefix + lastPara + "\n\n"
+          : prefix;
     }
     acc += para + "\n\n";
+    lastPara = para;
   }
   if (acc.trim().length > prefix.trim().length) {
     chunks.push({

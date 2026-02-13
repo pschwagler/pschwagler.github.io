@@ -45,8 +45,8 @@ describe("retrieveRelevantChunks", () => {
 
     expect(mockRpc).toHaveBeenCalledWith("match_documents", {
       query_embedding: fakeEmbedding,
-      match_count: 5,
-      match_threshold: 0.5,
+      match_count: 10,
+      match_threshold: 0.3,
     });
   });
 

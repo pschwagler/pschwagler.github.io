@@ -140,6 +140,38 @@ describe("chunkMarkdown", () => {
     expect(chunks[0].content).toContain("Overview.");
   });
 
+  it("overlaps last paragraph of chunk N into chunk N+1 for oversized sections", () => {
+    // Build a ## section with 3 paragraphs, each ~800 chars so it must split
+    const para1 = "First paragraph. " + "A".repeat(780);
+    const para2 = "Second paragraph. " + "B".repeat(780);
+    const para3 = "Third paragraph. " + "C".repeat(780);
+    const text = [
+      "# Doc",
+      "",
+      "## Big Section",
+      "",
+      para1,
+      "",
+      para2,
+      "",
+      para3,
+    ].join("\n");
+
+    const chunks = chunkMarkdown(text, "test.md");
+    // Should produce multiple chunks from the oversized section
+    expect(chunks.length).toBeGreaterThanOrEqual(2);
+
+    // Last paragraph of chunk 0 should appear at the start of chunk 1 (after prefix)
+    const chunk0Lines = chunks[0].content.split("\n\n");
+    const lastParaOfChunk0 = chunk0Lines[chunk0Lines.length - 1];
+    expect(chunks[1].content).toContain(lastParaOfChunk0);
+
+    // Verify the overlap paragraph comes right after the prefix in chunk 1
+    const chunk1Lines = chunks[1].content.split("\n\n");
+    // chunk1Lines[0] = "# Doc", [1] = "## Big Section", [2] = overlap paragraph
+    expect(chunk1Lines[2]).toBe(lastParaOfChunk0);
+  });
+
   it("assigns sequential chunk indices", () => {
     const text = [
       "# Doc",

@@ -1,0 +1,347 @@
+[
+  {
+    "question": "How did he end up in tech from civil engineering?",
+    "answer": "Patrick initially studied Civil Engineering (Structural) at Princeton University, also earning a certificate in Computer Science. While he was drawn to the idea of building things from the ground up, internships revealed that civil engineering wasn't the right fit for him.\n\nAfter playing professional volleyball for two years, he transitioned into tech by joining Riparian, a consulting startup focused on IT systems integrations. When Riparian launched its own product, Patrick seized the opportunity to lead QA, which involved building end-to-end test suites. This experience reignited his passion for software development. To further sharpen his skills, he completed Hack Reactor's coding immersive before joining C3.ai.",
+    "status": "ok"
+  },
+  {
+    "question": "What did he study at Princeton?",
+    "answer": "Patrick studied Civil Engineering (Structural) at Princeton University with a certificate in Computer Science. He was also captain of the Princeton Men's Volleyball team his senior year.",
+    "status": "ok"
+  },
+  {
+    "question": "What was it like playing professional volleyball?",
+    "answer": "Patrick played professional volleyball for two years in Salento, Italy, and Dubai after college. I don't have specific details about what that experience was like, beyond the fact that it occurred.",
+    "status": "ok"
+  },
+  {
+    "question": "Where did Patrick play volleyball professionally?",
+    "answer": "Patrick played professional volleyball in Salento, Italy, and Dubai for two years after college.",
+    "status": "ok"
+  },
+  {
+    "question": "What did he do before C3.ai?",
+    "answer": "Before C3.ai, Patrick had a diverse background. He played professional volleyball for two years in Italy and Dubai. Afterward, he started his tech career at Riparian, a consulting startup, as an IT systems integrations consultant. When Riparian launched its own product, he transitioned to QA Lead, where he built end-to-end test suites and rediscovered his passion for software development. To further sharpen his full-stack skills, he completed a coding immersive at Hack Reactor.",
+    "status": "ok"
+  },
+  {
+    "question": "What does C3.ai do?",
+    "answer": "C3.ai builds predictive AI solutions for enterprise customers. They focus on custom applications that integrate disparate data systems, design UIs, and deploy and scale machine learning models across various industries like finance, energy, utilities, manufacturing, state & local government, and pharma.",
+    "status": "ok"
+  },
+  {
+    "question": "How long was he at C3.ai?",
+    "answer": "Patrick was at C3.ai for 5.5 years.",
+    "status": "ok"
+  },
+  {
+    "question": "What industries did he work across at C3?",
+    "answer": "At C3.ai, Patrick built applications for customers across several industries, including finance, energy, utilities, manufacturing, state & local government, and pharma.",
+    "status": "ok"
+  },
+  {
+    "question": "What cloud platforms has he deployed on?",
+    "answer": "Patrick has deployed production applications on AWS, Azure, and GCP. He also has experience with on-premise and air-gapped environments.",
+    "status": "ok"
+  },
+  {
+    "question": "What was his career progression at C3?",
+    "answer": "Patrick progressed through several roles during his 5.5 years at C3.ai:\n\n1.  **Forward Deployed Engineer** (2019–2021)\n2.  **Senior Forward Deployed Engineer**\n3.  **Manager, Forward Deployed Engineering** (2022–2024)",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me about the financial institution project",
+    "answer": "Patrick joined an at-risk pilot at a top U.S. financial institution as the sole C3 engineer just one week before its scheduled go-live. He tackled critical issues like out-of-memory crashes, performance bottlenecks, data correctness, and schema drift within an air-gapped, on-premise environment that had no ability to scale.\n\nHe redesigned distributed aggregation jobs using mapreduce with intelligent bucketing, which improved performance by approximately 10–15x. He also implemented fault tolerance, idempotency, and alerting. The project successfully launched to over 500 global users and expanded from its initial role as a BI tool into payment modernization scoring and RFP response automation. This success led to the team growing from one to three engineers over two years.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the hardest debugging problem he solved?",
+    "answer": "Patrick's hardest technical debugging problem was during an at-risk pilot project at a top U.S. financial institution. He joined as the sole C3 engineer the week before go-live in an air-gapped, on-premise environment with no ability to scale.\n\nHe had to debug:\n*   OOM crashes (out-of-memory)\n*   Performance bottlenecks\n*   Data correctness issues\n*   Schema drift\n\nHe then redesigned distributed aggregation jobs using mapreduce with intelligent bucketing, achieving a 10-15x performance improvement and adding fault tolerance, idempotency, and alerting.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he fix the OOM crashes at the financial institution?",
+    "answer": "At a top U.S. financial institution, Patrick addressed OOM crashes by redesigning distributed aggregation jobs. He implemented mapreduce with intelligent bucketing, distinguishing between large and small accounts, which led to a 10-15x performance improvement. He also added fault tolerance, idempotency, and alerting to the system.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the petrochemical manufacturer project about?",
+    "answer": "On the petrochemical manufacturer project, Patrick led C3 engineering efforts. He built UI features, developer CLI tooling, internationalization, and a Google Translation connector with a dictionary of plant-specific terms and caching. He also served as a liaison for platform bugs, troubleshooting root causes and proposing fixes.\n\nA key part of the project was designing the data model and calculation engine for mass, energy, and carbon metrics to support EU sustainability compliance, which had an estimated customer value of $20 million.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he handle the air-gapped deployment environment?",
+    "answer": "In an air-gapped, on-premise environment at a top U.S. financial institution, Patrick joined an at-risk pilot project. He debugged OOM crashes, performance bottlenecks, data correctness issues, and schema drift.\n\nHe redesigned distributed aggregation jobs using mapreduce with intelligent bucketing (large vs. small accounts), which achieved a 10–15x performance improvement. He also added fault tolerance, idempotency, and alerting to the system.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the mapreduce solution he built for aggregation?",
+    "answer": "For an at-risk pilot at a top U.S. financial institution, Patrick redesigned distributed aggregation jobs using mapreduce with intelligent bucketing. This approach differentiated between large and small accounts, achieving a 10–15x performance improvement. He also added fault tolerance, idempotency, and alerting to the solution.",
+    "status": "ok"
+  },
+  {
+    "question": "How did the financial institution project grow over time?",
+    "answer": "Initially, the financial institution project launched to over 500 global users as a BI tool. Over time, it expanded beyond that initial scope into payment modernization scoring and RFP response automation. The engineering team supporting the project also grew, from Patrick as the sole C3 engineer to a team of three engineers over two years.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the sustainability compliance work he did?",
+    "answer": "Patrick designed the data model and calculation engine for mass, energy, and carbon metrics for a large global petrochemical manufacturer. This work was used for EU sustainability compliance and was estimated to have a $20 million customer value.",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me about the aluminum cup manufacturer rescue",
+    "answer": "Patrick rescued a struggling aluminum cup manufacturer deployment just a week before its go-live. He diagnosed issues like frozen UIs and crashing workers, pinpointing a platform normalization bug and incorrect metrics computation that also degraded ML model performance. To resolve this, he built a custom streaming metrics caching system with hierarchical aggregation across sensors, equipment, production lines, and plants. The project successfully launched with a performant UI and a fully-tested metrics suite.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the energy forecasting project for the steel manufacturer?",
+    "answer": "For a large Asian steel manufacturer, Patrick designed and led a team of 2 engineers to deliver an energy forecasting application from data to production in just 5 weeks. This application included an \"evidence package\" that allowed users to explore key metrics, understand model contributions, and calculate \"what if\" scenarios. The successful delivery of this project led the customer to pursue an additional contract for their AI digital transformation.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he deliver the steel manufacturer project in 5 weeks?",
+    "answer": "Patrick delivered the steel manufacturer project by designing and leading a team of 2 engineers. Together, they built an energy forecasting application, taking it from raw data to production in 5 weeks.\n\nThe application included an \"evidence package\" for forecasts, which allowed users to explore key metrics, model contributions, and calculate \"what if\" scenarios. This successful delivery led the customer to pursue an additional contract for their AI digital transformation.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the evidence package Patrick built for energy forecasts?",
+    "answer": "I don't have information about a specific \"evidence package\" Patrick built for energy forecasts in the provided content. Patrick did build custom predictive AI applications for enterprise customers in the energy sector during his time at C3.ai, alongside other industries like finance, utilities, manufacturing, state & local government, and pharma.",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me about the utility company API he designed",
+    "answer": "Patrick designed and built an API for a large U.S. utility company's public-facing energy consumption portal. He also performed a technical review of distributed data jobs for this project, proposing a solution that saved approximately $100,000 in VCPU hours, a 20% reduction.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the energy baselining project?",
+    "answer": "Patrick led the deployment of an energy baselining product for a large Middle-East chemical company. This project included implementing mass flow visibility using stoichiometric calculations.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he optimize the utility company's infrastructure costs?",
+    "answer": "For a large U.S. utility company, Patrick performed a technical review of distributed data jobs for their public-facing energy consumption portal. He proposed a solution that saved approximately $100,000 in VCPU hours, which was a 20% reduction in costs.",
+    "status": "ok"
+  },
+  {
+    "question": "Why did he move into management?",
+    "answer": "Patrick moved into management because there was an organizational need for an engineering manager, and he saw an opportunity to make a positive impact on the NYC engineering team. He found it rewarding to manage 10-12 engineers, helping to scale the team during a period of rapid company growth. He also gained valuable experience leading and motivating engineers, assisting them with technical solutions and difficult situations, and contributing to organizational strategy for a large engineering department.",
+    "status": "ok"
+  },
+  {
+    "question": "How many engineers did he manage?",
+    "answer": "As an Engineering Manager, Patrick managed 10–12 engineers directly. During a later period, he managed a team of 12–15 external contractors and 3 full-time C3.ai engineers.",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me about the Property Assessment application",
+    "answer": "The Property Assessment application is an AI-powered system that aggregates county/state-level assessment (CAMA) data, Multiple Listing Service (MLS) data, and geographic (GIS) data. It creates models with predicted AI assessment values, using sales price as the evaluation target for training.\n\nThe application includes in-depth workflows tailored for different types of counties and states, making assessor teams more efficient by providing better data from multiple sources. It also offers visual maps and other metrics to quantify team progress and performance, along with tools for assessing quality and condition ratings from images found in listings data.\n\nPatrick deployed this application for dozens of county and state assessor teams. His goal was to move the product towards a self-serve model, reducing the need for engineers to ingest data and customize for each customer.\n\nKey accomplishments related to the Property Assessment application include:\n*   Architecting multi-tenancy and simplifying deployment infrastructure, which realized $1.8M in annual cloud savings (a 75% cost reduction). This involved replacing single-deployment-per-customer with shared servers and removing the product's dependency on Cassandra.\n*   Automating distributed backend workflows for ETL and ML inference, accelerating timelines from raw data to AI deployments by 66% (from 2 weeks to approximately 3 days). He also created automated data workbooks to reduce data integration efforts.\n*   Leading a pod of 20 solution engineers deploying the application, managing agile development strategy, scrum/project alignment, and performing technical audits to ensure enterprise-grade quality across 30+ concurrent projects.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he cut cloud costs on the Property Assessment project?",
+    "answer": "Patrick architected multi-tenancy for the AI Property Appraisal application and simplified its deployment infrastructure. He replaced the single-deployment-per-customer model with shared servers (DB, workers, leaders) and removed the product's dependency on Cassandra. This strategy led to $1.8M in annual cloud savings, which was a 75% cost reduction.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the multi-tenancy architecture he designed?",
+    "answer": "Patrick architected multi-tenancy for the AI Property Appraisal application. This involved replacing single deployments per customer with shared servers for databases, workers, and leaders. He also removed the product's dependency on Cassandra, which simplified the deployment infrastructure and led to a 75% cost reduction, realizing $1.8M in annual cloud savings.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he speed up deployment timelines?",
+    "answer": "Patrick accelerated deployment timelines by 66% (from two weeks to approximately three days) by automating distributed backend workflows for ETL and ML inference. He also created automated data workbooks that generated system code, significantly reducing data integration efforts.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he manage 15 contract engineers?",
+    "answer": "Patrick managed a team of 12–15 external contractors (and 3 full-time C3.ai engineers). He built a structure that grew engineers from junior contributors into project leads, trusting strong engineers to specialize and repeat tasks across projects while identifying those ready for leadership.\n\nHe also led the agile development strategy, scrum/project alignment, and performed technical audits, establishing and enforcing software standards via code reviews across 30+ concurrent projects. He mentored engineers on technical solutions and navigating difficult customer situations, and worked closely with product engineering to communicate and prioritize product gaps.",
+    "status": "ok"
+  },
+  {
+    "question": "What's his approach to growing junior engineers into leads?",
+    "answer": "Patrick built a structure that grew engineers from junior contributors into project leads. He did this by trusting strong engineers to specialize and repeat tasks across projects, while also identifying those ready for leadership roles. He also mentored engineers on technical solutions and how to navigate difficult customer situations.",
+    "status": "ok"
+  },
+  {
+    "question": "What was the hardest leadership challenge?",
+    "answer": "The hardest leadership challenge Patrick faced was during the Property Assessment project. He was tasked with leading 15 contract engineers, managing 20 concurrent projects, and developing a new product that was still in beta. This was a difficult but ultimately rewarding experience.",
+    "status": "ok"
+  },
+  {
+    "question": "How did he handle the organizational strategy role?",
+    "answer": "As a Manager, Forward Deployed Engineering, Patrick participated in organizational strategy for a 150+ engineer organization. He helped establish and enforce software standards through code reviews and technical audits, ensuring enterprise-grade quality across many concurrent projects. He also focused on team structure, managing a team of 12–15 external contractors and 3 full-time C3.ai engineers, and building a system that enabled junior contributors to grow into project leads.",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me about Beach League",
+    "answer": "Beach League is a beach volleyball league management platform that Patrick built to transform casual training sessions into competitive leagues.\n\nHere's a breakdown:\n\n*   **Origin**: Patrick created it to add structure to his morning beach volleyball training sessions with friends, allowing players to compete for points and track statistics. Since its launch, the training sessions have become very popular.\n*   **Features**: It offers league management with points and standings, player statistics (including partner/opponent analysis), AI-powered score entry (reading images of scoreboards via an LLM), a chat interface for updates, and tournament organization.\n*   **Vision**: Patrick envisions expanding Beach League to help players meet others in their communities, run tournaments, and see how they stack up against others without needing to travel for extensive AVP tournaments.\n*   **Tech Stack**:\n    *   **Frontend**: Next.js, TypeScript, React\n    *   **Backend**: FastAPI, Python\n    *   **Database**: PostgreSQL, Redis\n    *   **AI**: Gemini (LLM for image reading and chat), agentic workflows, RAG\n    *   **Infrastructure**: AWS, Docker, Turborepo\n    *   **Testing**: Jest, Pytest, Playwright, CI/CD\n*   **Links**:\n    *   **URL**: https://beachleaguevb.com\n    *   **GitHub**: https://github.com/pschwagler/beach-kings",
+    "status": "ok"
+  },
+  {
+    "question": "How does Beach League's AI score entry work?",
+    "answer": "Beach League's AI score entry works by reading images of scoreboards and translating the information into scores using an LLM (Large Language Model), specifically Gemini. This allows for automated score updates from photos.",
+    "status": "ok"
+  },
+  {
+    "question": "What tech stack does Beach League use?",
+    "answer": "Beach League uses a robust tech stack including:\n\n*   **Frontend**: Next.js, TypeScript, React\n*   **Backend**: FastAPI, Python\n*   **Database**: PostgreSQL, Redis\n*   **AI**: Gemini (LLM for image reading and chat), agentic workflows, RAG\n*   **Infrastructure**: AWS, Docker, Turborepo\n*   **Testing**: Jest, Pytest, Playwright, CI/CD",
+    "status": "ok"
+  },
+  {
+    "question": "What's the vision for Beach League?",
+    "answer": "The vision for Beach League is to expand and help players meet others in their communities, run tournaments, and see how they stack up against others without needing to travel for lengthy AVP tournaments.",
+    "status": "ok"
+  },
+  {
+    "question": "How did Beach League change the training sessions?",
+    "answer": "Beach League transformed casual beach volleyball training sessions into a structured league. Players now compete for points and track detailed statistics, including who they partner best with and how their skills compare across the group. This has led to the sessions exploding in popularity, with an extensive waiting list, and games becoming more competitive and exciting.",
+    "status": "ok"
+  },
+  {
+    "question": "What kind of player statistics does Beach League track?",
+    "answer": "Beach League tracks player statistics including who players partner best with, who they struggle against, and how their skills stack up against others in the group. It also provides partner and opponent analysis.",
+    "status": "ok"
+  },
+  {
+    "question": "What is GiftWell?",
+    "answer": "GiftWell is a production-ready subscription gifting platform focused on personal growth areas like wellness, learning, productivity, and fitness. Patrick built it to create a positive impact, gain experience with consumer-facing applications, and explore AI-assisted development workflows.\n\nIt handles the complete gift lifecycle, from creation and multi-channel delivery (email, SMS, physical) to redemption, expiration, cancellation, and refunds. The platform also features role-based access control, automated scheduled jobs, GDPR compliance, and comprehensive admin tooling.",
+    "status": "ok"
+  },
+  {
+    "question": "Why did GiftWell stall?",
+    "answer": "GiftWell stalled because Patrick discovered that landing initial subscription partners would require large up-front bulk-order purchases.",
+    "status": "ok"
+  },
+  {
+    "question": "What features did GiftWell have?",
+    "answer": "GiftWell had a comprehensive set of features, including:\n\n*   **Complete gift lifecycle management**: This covered creating, delivering, redeeming, expiring, canceling, and refunding gifts.\n*   **Multi-channel delivery**: Gifts could be delivered via email, SMS, or physical means.\n*   **Role-based access control**\n*   **Automated scheduled jobs**\n*   **GDPR compliance**\n*   **Comprehensive admin tooling**\n*   **Fully automated CI/CD pipeline** with Ansible-based infrastructure provisioning.",
+    "status": "ok"
+  },
+  {
+    "question": "How was GiftWell's CI/CD pipeline set up?",
+    "answer": "GiftWell's CI/CD pipeline was fully automated, including Ansible-based infrastructure provisioning. It integrated comprehensive testing using Jest for frontend, Pytest for backend, and Playwright for end-to-end tests to ensure robust test coverage. Docker was also utilized within its infrastructure setup.",
+    "status": "ok"
+  },
+  {
+    "question": "What's his tech stack?",
+    "answer": "Patrick has a well-rounded tech stack, with a strong focus on backend, data, and distributed systems.\n\nHere's a breakdown:\n\n*   **Languages**: JavaScript, TypeScript, Python, SQL\n*   **Frontend**: React, Next.js, Tailwind CSS, Vite\n*   **Backend**: FastAPI (Python)\n*   **Databases**: PostgreSQL (primary), Redis, Cassandra, MongoDB\n*   **Data Processing**: Apache Spark, Pandas\n*   **Cloud & Infrastructure**: AWS, Azure, GCP, Docker, CI/CD pipelines, Turborepo, Ansible\n*   **AI & Machine Learning**: ML model deployment and pipeline automation, LLM integrations (Gemini for RAG and agentic workflows), AI-assisted development (Claude, Cursor)\n*   **Tools**: Git, Figma, Jira, Confluence",
+    "status": "ok"
+  },
+  {
+    "question": "What languages does he work with?",
+    "answer": "Patrick has extensive experience with JavaScript, TypeScript, Python, and SQL. He uses JavaScript and TypeScript across both frontend and backend development, Python for data pipelines, backend services, and ML workflows, and SQL for databases like PostgreSQL, analytical queries, and data modeling.",
+    "status": "ok"
+  },
+  {
+    "question": "What databases has he used?",
+    "answer": "Patrick has extensive experience with several databases, including:\n\n*   **PostgreSQL** (his primary database across projects)\n*   **Cassandra**\n*   **Redis** (used in projects like Beach League)\n*   **MongoDB**",
+    "status": "ok"
+  },
+  {
+    "question": "What's his experience with distributed systems?",
+    "answer": "Patrick is deeply drawn to distributed systems and has extensive hands-on experience in this area.\n\nHe has:\n*   Solved \"extreme complexity\" in distributed aggregation problems, notably for a financial institution in an air-gapped environment with no ability to scale.\n*   Redesigned distributed aggregation jobs using MapReduce with intelligent bucketing, achieving a 10–15x performance improvement and adding fault tolerance, idempotency, and alerting.\n*   Performed technical reviews of distributed data jobs, proposing solutions that saved approximately $100k in VCPU hours.\n*   Automated distributed backend workflows for ETL and ML inference, accelerating timelines for AI deployments by 66%.",
+    "status": "ok"
+  },
+  {
+    "question": "Has he worked with ML pipelines?",
+    "answer": "Yes, Patrick has extensive experience with ML pipelines. He has worked on ML model deployment and pipeline automation at enterprise scale.\n\nAs a Manager, Forward Deployed Engineering, he automated distributed backend workflows for ETL and ML inference, accelerating timelines from raw data to AI deployments by 66%. Earlier in his career, he also deployed and scaled ML models for enterprise customers.",
+    "status": "ok"
+  },
+  {
+    "question": "What testing frameworks does he use?",
+    "answer": "Patrick uses a variety of testing frameworks to ensure comprehensive test coverage:\n\n*   **Jest** and **Pytest** for unit and integration testing.\n*   **Playwright** for end-to-end testing.\n\nHe is a strong advocate for comprehensive test coverage and CI/CD enforcement.",
+    "status": "ok"
+  },
+  {
+    "question": "What frontend frameworks does he know?",
+    "answer": "Patrick's primary frontend UI framework is React. He has also used Next.js in projects like Beach League and GiftWell.",
+    "status": "ok"
+  },
+  {
+    "question": "What backend frameworks does he prefer?",
+    "answer": "Patrick primarily uses FastAPI for his side projects. He also has experience with Django and Node.js.",
+    "status": "ok"
+  },
+  {
+    "question": "What's his engineering philosophy?",
+    "answer": "Patrick's engineering philosophy centers on building readable, maintainable code with a strong emphasis on quality. He is passionate about comprehensive testing, detailed code reviews, CI/CD pipelines, and separation of concerns.\n\nHis core principles include starting with visual designs and technical PRDs before writing any code. He operates with a production mindset, always scanning for duplication, leaving code cleaner than he found it, and fixing root causes rather than symptoms. Patrick prefers solid abstractions over quick hacks and believes in not taking shortcuts, avoiding \"good enough for now\" solutions if a cleaner approach is reasonably achievable.",
+    "status": "ok"
+  },
+  {
+    "question": "How does he approach code quality?",
+    "answer": "Patrick is passionate about code quality and has a strong engineering philosophy that guides his approach. He emphasizes comprehensive testing, detailed code reviews, robust CI/CD pipelines, and clear separation of concerns.\n\nHis core principles include building readable and maintainable code, starting with visual designs and technical PRDs before writing any code. He also follows a \"production mindset\": scanning for duplication, leaving code cleaner than he found it, fixing root causes over symptoms, and preferring solid abstractions over quick hacks. He avoids shortcuts, ensuring solutions are clean rather than shipping \"good enough for now\" code if a better solution is reasonably achievable.",
+    "status": "ok"
+  },
+  {
+    "question": "What does he think about testing?",
+    "answer": "Patrick is a strong advocate for comprehensive testing and considers it a core part of his engineering philosophy. He is passionate about ensuring robust test coverage and enforcing it through CI/CD pipelines.\n\nHe has experience with:\n*   **Jest** and **Pytest** for unit and integration testing.\n*   **Playwright** for end-to-end testing.\n\nEven with AI-assisted development, he emphasizes verifying that the correct tests are in place, thoroughly whitegloving features himself, and ensuring that any unexpected issues or failures do not go unnoticed.",
+    "status": "ok"
+  },
+  {
+    "question": "What are his core engineering principles?",
+    "answer": "Patrick's core engineering principles emphasize building readable and maintainable code, starting with visual designs and a technical Product Requirements Document (PRD) before writing any code.\n\nHe is passionate about:\n*   **Code quality**\n*   **Comprehensive testing**\n*   **Detailed code reviews**\n*   **CI/CD pipelines**\n*   **Separation of concerns**\n\nHe also adheres to a \"production mindset,\" which means scanning for duplication, leaving code cleaner than he found it, fixing root causes instead of symptoms, and preferring solid abstractions over quick hacks. He avoids shortcuts, ensuring a cleaner solution is implemented if it's a reasonable effort, rather than shipping \"good enough for now.\"",
+    "status": "ok"
+  },
+  {
+    "question": "How does he approach code reviews?",
+    "answer": "Patrick is passionate about detailed code reviews. He uses them to enforce software standards and ensure enterprise-grade quality across projects, as he did when leading the Property Assessment application deployment. He also uses them to ensure code aligns with his engineering principles and philosophies, even reviewing his own AI-generated code against these standards.",
+    "status": "ok"
+  },
+  {
+    "question": "What's his take on AI-assisted development?",
+    "answer": "Patrick has had a dramatic shift in his perspective on AI-assisted development tools like Claude and Cursor. Just a few months ago, he held a very different view, but after hundreds of hours using the technology, he is now \"blown away\" by the pace of development it enables and its ability to build extremely robust, well-tested applications. He is eager to work in an environment where AI-assisted development is encouraged.",
+    "status": "ok"
+  },
+  {
+    "question": "How did Patrick build this site?",
+    "answer": "Patrick built this site in less than one day of effort. He started by writing a detailed Product Requirements Document (PRD) and had AI team members review it for gaps. He then used Claude Code in a \"ralph loop,\" working on one task at a time with proper testing. He also performed his own code reviews against his engineering principles while snowboarding between sessions.\n\nIn total, it took less than a day of development effort, plus a few hours to populate the content into a vector database.",
+    "status": "ok"
+  },
+  {
+    "question": "How long did it take to build this site?",
+    "answer": "Patrick built this site in less than one day of effort. This included writing a detailed Product Requirements Document, using AI team members for review, and employing a \"ralph loop\" coding pattern. An additional few hours were spent on interviewing to gather enough content for the vector database.",
+    "status": "ok"
+  },
+  {
+    "question": "Tell me how this site works",
+    "answer": "This site uses an AI-powered system to answer your questions. When you ask a question:\n\n1.  **Verification & Rate Limiting**: Cloudflare Turnstile verifies you're human, and rate limiting prevents abuse.\n2.  **RAG Process**: Your question is converted into a vector embedding and matched against relevant content chunks from Patrick's markdown files (experience, projects, skills, etc.) stored in Supabase using `pgvector`.\n3.  **AI Generation**: The most relevant content chunks are fed into a prompt with your question, and the AI (primarily Gemini 2.5 Flash, with Claude as a fallback) generates a response.\n4.  **Streaming & Follow-ups**: The AI response is streamed back to you, and contextually relevant follow-up questions are suggested.\n\nOn the backend, a sync pipeline reads markdown files from the `content/` directory, chunks them, generates embeddings, and stores them in Supabase, making content updates straightforward.\n\nThe site is built with React Router 7 (with SSR), Tailwind v4 for styling, and hosted on Vercel. Patrick is amazed by the recent progress in LLMs that enabled this architecture, and he emphasizes the importance of thorough testing and verification to ensure reliability.",
+    "status": "ok"
+  },
+  {
+    "question": "What are ralph loops?",
+    "answer": "A ralph loop is an autonomous AI coding pattern where an AI agent like Claude Code runs in a continuous loop, repeatedly working through tasks until a project is complete.\n\nThe key insight is that each iteration gets a fresh context window. The agent picks up where the last left off by reading the filesystem, git history, and progress files rather than carrying over its own conversation context. This helps avoid \"context rot,\" which is the degradation of LLM output quality as conversations grow long. Each iteration performs one task, commits its work, and then the loop restarts with a fresh agent instance.",
+    "status": "ok"
+  },
+  {
+    "question": "How has his perspective on AI tools changed?",
+    "answer": "Patrick has undergone a dramatic shift in his perspective on AI development tools. Just a few months ago, he had a very different view on how developers should use tools like Claude or Cursor. However, after spending hundreds of hours with the technology, he is now blown away by the pace of development it enables and its ability to build extremely robust, well-tested applications. He is now eager to work in environments where AI-assisted development is encouraged.",
+    "status": "ok"
+  },
+  {
+    "question": "What drives him professionally?",
+    "answer": "Patrick is driven by a passion for building real systems that deliver value to real users. He enjoys working directly with users to understand the full picture and developing across the stack to create solutions that truly make their lives better and deliver tangible business value. This focus was evident in his work at C3.ai, where he built applications for many customers in both post-sales and pre-sales.",
+    "status": "ok"
+  },
+  {
+    "question": "What should I take away from his experience?",
+    "answer": "You should walk away thinking that Patrick is passionate about building real systems for real users, and is exceptionally well-suited for the new era of AI software. He has broad generalist experience, which is ideal for modern AI-assisted development.\n\nKey takeaways include:\n*   **Customer Focus**: Years of direct customer experience, understanding needs and building solutions that deliver valuable insights.\n*   **Diverse Experience**: He's worked across finance, energy, utilities, manufacturing, state & local government, and pharma.\n*   **Technical Versatility**: Delivered predictive AI applications on AWS, Azure, GCP, and on-premise.\n*   **Problem Solver & Leader**: He consistently solves complex problems, regardless of difficulty, and has a proven track record of leading teams and large projects.\n*   **AI-Assisted Development Enthusiast**: He's a strong advocate for and skilled in AI-assisted development workflows, having experienced its dramatic impact on productivity and quality.",
+    "status": "ok"
+  },
+  {
+    "question": "What kind of role is he looking for?",
+    "answer": "Patrick is passionate about the new era of AI-assisted development and is eager to work in an environment where it is encouraged. He is a generalist drawn most deeply to back-end, data, and distributed systems, with well-rounded experience across the full stack.\n\nHe is open to new opportunities — feel free to reach out to start a conversation.\n\n[contact-form]",
+    "status": "ok"
+  },
+  {
+    "question": "What makes him well-suited for the AI era?",
+    "answer": "Patrick is well-suited for the AI era due to his extensive experience delivering predictive AI applications at enterprise scale across various industries. He has a deep understanding of ML model deployment, pipeline automation, and LLM integrations, including agentic workflows, RAG, and embeddings.\n\nHe also has hundreds of hours of hands-on experience with AI-assisted development tools like Claude and Cursor, which enables him to build robust, well-tested applications efficiently. His background as a generalist, combined with his passion for understanding user needs and building solutions that deliver valuable insights, makes him particularly effective in this evolving landscape.",
+    "status": "ok"
+  },
+  {
+    "question": "How would you describe his career arc?",
+    "answer": "Patrick's career arc began with a passion for building things, leading him to study Civil Engineering with a Computer Science certificate at Princeton. After a period playing professional volleyball, he transitioned into tech through IT consulting at Riparian, where he rediscovered his love for software leading QA.\n\nHe then joined C3.ai as a Forward Deployed Engineer for 5.5 years, where he gained extensive experience building predictive AI applications for various industries and customers. This role allowed him to work directly with users across finance, energy, utilities, manufacturing, state & local government, and pharma, delivering value on AWS, Azure, GCP, and on-premise. He later moved into an engineering management role at C3.ai, leading a team of 10–12 engineers and contributing to organizational strategy.\n\nCurrently, Patrick is passionate about AI-assisted development and leveraging his broad generalist experience to build robust, well-tested applications in this new era of software.",
+    "status": "ok"
+  }
+]
