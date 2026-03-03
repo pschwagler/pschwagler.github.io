@@ -31,9 +31,7 @@ export async function sendContactEmail(
 
   const { email, message, name, company, jobTitle } = options;
 
-  const subject = name
-    ? `Portfolio contact from ${name} (${email})`
-    : `Portfolio contact from ${email}`;
+  const subject = "Resume Request on patrick-schwagler.vercel.app";
 
   const lines: string[] = [];
   lines.push(`From: ${name ? `${name} <${email}>` : email}`);
