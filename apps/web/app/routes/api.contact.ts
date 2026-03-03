@@ -131,16 +131,18 @@ export async function action({ request }: { request: Request }) {
       );
     }
 
-    // --- Send email (fire-and-forget) ---
-    sendContactEmail({
-      email,
-      message: message.trim(),
-      name,
-      company,
-      jobTitle,
-    }).catch((err) => {
+    // --- Send email ---
+    try {
+      await sendContactEmail({
+        email,
+        message: message.trim(),
+        name,
+        company,
+        jobTitle,
+      });
+    } catch (err) {
       console.error("Failed to send contact email:", err);
-    });
+    }
 
     return Response.json({ success: true });
   } catch {

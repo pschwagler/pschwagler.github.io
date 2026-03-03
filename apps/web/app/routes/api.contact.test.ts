@@ -193,7 +193,7 @@ describe("api.contact", () => {
     expect(res.status).toBe(500);
   });
 
-  // --- Resend fire-and-forget ---
+  // --- Resend email ---
 
   it("calls sendContactEmail on success", async () => {
     await action({
