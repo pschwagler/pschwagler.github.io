@@ -62,6 +62,20 @@ export const EXPERIENCE: ExperienceItem[] = [
   },
 ];
 
+export interface EducationItem {
+  institution: string;
+  degree: string;
+  year: string;
+}
+
+export const EDUCATION: EducationItem[] = [
+  {
+    institution: "Princeton University",
+    degree: "BSE in Civil Engineering, Certificate in Computer Science",
+    year: "2014",
+  },
+];
+
 export interface SkillGroup {
   category: string;
   items: string[];
