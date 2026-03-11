@@ -72,6 +72,20 @@ export const EXPERIENCE: ExperienceItem[] = [
   },
 ];
 
+export interface AthleticsItem {
+  title: string;
+  organization: string;
+  period: string;
+}
+
+export const ATHLETICS: AthleticsItem[] = [
+  {
+    title: "Professional Volleyball Player",
+    organization: "AVP / FIVB",
+    period: "2014 – 2016",
+  },
+];
+
 export interface EducationItem {
   institution: string;
   degree: string;

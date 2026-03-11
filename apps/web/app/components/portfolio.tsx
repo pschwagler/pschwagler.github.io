@@ -3,6 +3,7 @@ import { GitHubIcon, LinkedInIcon, MailIcon } from "~/components/icons";
 import {
   ADJECTIVES,
   APPS,
+  ATHLETICS,
   EDUCATION,
   EXPERIENCE,
   SKILL_GROUPS,
@@ -222,6 +223,34 @@ function ExperienceSection() {
   );
 }
 
+function AthleticsSection() {
+  return (
+    <section className="mt-16 space-y-4">
+      <SectionHeading>Athletics</SectionHeading>
+      <div className="space-y-4">
+        {ATHLETICS.map((item) => (
+          <div
+            key={item.title}
+            className="flex items-baseline justify-between gap-4"
+          >
+            <div>
+              <p className="font-medium text-neutral-900 dark:text-neutral-50">
+                {item.title}
+              </p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                {item.organization}
+              </p>
+            </div>
+            <p className="shrink-0 text-sm text-neutral-400 dark:text-neutral-500">
+              {item.period}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function EducationSection() {
   return (
     <section className="mt-16 space-y-4">
@@ -289,6 +318,7 @@ export function Portfolio({
       <IntroSection onContact={onContact} />
       <AppsSection onAskAboutApp={onAskAboutApp} />
       <ExperienceSection />
+      <AthleticsSection />
       <EducationSection />
       <SkillsSection />
     </>
