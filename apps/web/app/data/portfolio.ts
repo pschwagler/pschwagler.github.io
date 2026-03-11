@@ -81,7 +81,7 @@ export interface AthleticsItem {
 export const ATHLETICS: AthleticsItem[] = [
   {
     title: "Professional Volleyball Player",
-    organization: "AVP / FIVB",
+    organization: "Italy Series A2, Dubai Pro League",
     period: "2014 – 2016",
   },
 ];
