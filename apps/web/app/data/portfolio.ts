@@ -58,7 +58,17 @@ export const EXPERIENCE: ExperienceItem[] = [
   {
     title: "Forward Deployed Engineer",
     company: "C3.ai",
-    period: "2019 – 2021",
+    period: "2020 – 2021",
+  },
+  {
+    title: "QA Engineer Lead",
+    company: "Riparian",
+    period: "2018 – 2020",
+  },
+  {
+    title: "Consultant, Systems Implementations",
+    company: "Riparian",
+    period: "2017 – 2018",
   },
 ];
 
